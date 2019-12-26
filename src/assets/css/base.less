@@ -1,0 +1,133 @@
+@import "reset";
+// 用到什么字体引入什么字体
+@font-face {
+    font-family: DINNextW1G-BoldItalic;
+    src: url('../DIN/DINNextW1G-BoldItalic.otf')
+}
+@font-face {
+    font-family: DINNextW1G-Medium;
+    src: url('../DIN/DINNextW1G-Medium.otf')
+}
+@font-face {
+    font-family: DINNextW1G-MediumItalic;
+    src: url('../DIN/DINNextW1G-MediumItalic.otf')
+}
+@font-face {
+    font-family: DINNextW1G-Bold;
+    src: url('../DIN/DINNextW1G-Bold.otf')
+}
+
+@font-face {
+    font-family: SourceHanSansCN-Regular;
+    src: url('../SourceHanSansCN/SourceHanSansCN-Regular.otf')
+}
+
+@font-face {
+    font-family: SourceHanSansCN-Medium;
+    src: url('../SourceHanSansCN/SourceHanSansCN-Medium.otf')
+}
+@font-face {
+	font-family: SourceHanSansCN-Bold;
+    src: url('../SourceHanSansCN/SourceHanSansCN-Bold.otf')
+}
+html,
+body,
+#app {
+    font-family:Arial, "Microsoft YaHei", "微软雅黑";
+}
+.clear {
+    clear: both;
+}
+// 格子显示的背景色
+.effects {
+    text-shadow: 0px 0px 10px #0245a7, 0px 0px 20px #0245a7,0px 0px 30px #0245a7,0px 0px 40px #0245a7,0px 0px 50px #0245a7;
+}
+
+.effects-small {
+    text-shadow: 0px 0px 5px #0245a7, 0px 0px 10px #0245a7,0px 0px 15px #0245a7,0px 0px 20px #0245a7,0px 0px 25px #0245a7;
+}
+
+.effects-white {
+    text-shadow: 0px 0px 5px #0245a7, 0px 0px 8px #0245a7;
+}
+
+.el-row{
+	margin-bottom: 24px;
+}
+
+.mainbox{
+	width:calc(100% - 40px);
+	.titleBox{
+		height: 60px;
+		line-height: 60px;
+		font-weight: bold;
+		color: #666666;
+		font-size: 16px;
+		span{
+			color: #487fff;
+		}
+		.buttons{
+			float: right;
+			// margin-right: 24px;
+			width: 80px;
+			height: 32px;
+			margin-top: 19px;
+			color: #fff;
+			text-align: center;
+			line-height: 32px;
+			font-size: 14px;
+			border-radius: 3px;
+			background: #487fff;
+			cursor: pointer;
+		}
+	}
+}
+.modelboxs{
+	height: 100%;
+	width: calc(100% - 30px);
+	margin-left: 20px;
+}
+.levelTwoTitle{
+	height: 56px;
+	line-height: 56px;
+	color: #333;
+	font-size: 16px;
+	border-bottom: 1px solid #eee;
+	span{
+		display: block;
+		float: left;
+		margin-top: 21px;
+		width: 3px;
+		height: 14px;
+		background: #487fff;
+		margin-right: 10px;
+	}
+}
+.buttonsBox{
+		float: right;
+		height: 30px;
+		margin-top: 13px;
+		div{
+			width: 88px;
+			height: 30px;
+			border-radius: 15px;
+			text-align: center;
+			line-height: 30px;
+			margin: 0 7px;
+			float: left;
+			border: solid 1px #487fff;
+			color: #487fff;
+			cursor: pointer;
+			font-size: 14px;
+		}
+		.choosen{
+			background: #487fff;
+			border: 0;
+			color: #fff;
+		}
+	}
+.levelTwoechartsBoxs{
+		float: left;
+		width: 50%;
+		height: 100%;
+	}
