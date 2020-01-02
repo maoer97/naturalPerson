@@ -1,38 +1,28 @@
 <template>
 	<div class="mainbox">
-		<div class="titleBox">湖北省<span>2019年</span>就业及收入
+		<div class="titleBox">湖北省<span>{{year}}年</span>就业及收入
 			<div class="buttons">下载</div>
 		</div>
-		<div class="modelDetailsBox">
-			<el-row>
-				<el-col :span='24'>
-					
-				</el-col>
-			</el-row>
+		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
+		<div class="modelDetailsBox" v-if="showAll">
 			<el-row>
 				<el-col :span='24'>
 					<div class="modelOneBox">
 						<div class="modelboxs">
-							<div class="levelTwoTitle"><span></span>全社会从业人员情况
-								<div class="buttonsBox">
-									<div @click="modelOneChange(1)" :class="modelOneIndex==1?'choosen':''">总人口数</div>
-									<div @click="modelOneChange(2)" :class="modelOneIndex==2?'choosen':''">按产业</div>
-									<div @click="modelOneChange(3)" :class="modelOneIndex==3?'choosen':''">按城乡</div>
-								</div>
-							</div>
+							<subheading :items='modelOneList' :titles='"全社会从业人员情况"' @changeIndex='modelOneChange'></subheading>
 							<div style="width: 100%;height: calc(100% - 56px);">
 								<div class="emmodelOneEchartsBoxs">
-									<init-echartsone :id='"emmodelOneEchartsBoxs"' :datas = 'modelOneDataOne'></init-echartsone>
+									<init-echartsone :id='"emmodelOneEchartsBoxs"' :datas = 'modelOneDataOne[modelOneIndex]' v-if="showModelOne"></init-echartsone>
 								</div>
 								<div class="dataDetailBox">
 									<p style="color: #666666;">全社会从业人员</p>
-									<p style="color: #487fff;">(2018年)</p>
-									<div><span>937 </span> 万人</div>
-									<p>同比上期<span class="up">10%<i></i></span></p>
+									<p style="color: #487fff;">({{modelOneDetail.year}}年)</p>
+									<div><span>{{modelOneDetail.qshcy}} </span> 万人</div>
+									<p>同比上期<span :class="modelOneDetail.type">{{modelOneDetail.cyratio}}%<i></i></span></p>
 									<p style="color: #666666;margin-top: 24px;">劳动年龄人口</p>
-									<p style="color: #487fff;">(2018年)</p>
-									<div><span>961 </span> 万人</div>
-									<p>同比上期<span class="down">7.8%<i></i></span></p>
+									<p style="color: #487fff;">({{modelOneDetail.year}}年)</p>
+									<div><span>{{modelOneDetail.ldrk}} </span> 万人</div>
+									<!-- <p>同比上期<span class="down">7.8%<i></i></span></p> -->
 								</div>
 							</div>
 						</div>
@@ -50,13 +40,13 @@
 								</div>
 								<div class="dataDetailBox">
 									<p style="color: #666666;">新增就业人口</p>
-									<p style="color: #487fff;">(2018年)</p>
-									<div><span>137 </span> 万人</div>
-									<p>同比上期<span class="up">10%<i></i></span></p>
+									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
+									<div><span>{{modelTwoDataOne.xzjyrs}} </span> 万人</div>
+									<p>同比上期<span :class="modelTwoDataOne.xzjyRatio>0?'up':'down'">{{modelTwoDataOne.xzjyRatio}}%<i></i></span></p>
 									<p style="color: #666666;margin-top: 24px;">失业人口</p>
-									<p style="color: #487fff;">(2018年)</p>
-									<div><span>51 </span> 万人</div>
-									<p>同比上期<span class="down">7.8%<i></i></span></p>
+									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
+									<div><span>{{modelTwoDataOne.syrs}} </span> 万人</div>
+									<p>同比上期<span :class="modelTwoDataOne.syRatio>0?'up':'down'">{{modelTwoDataOne.syRatio}}%<i></i></span></p>
 								</div>
 							</div>
 						</div>
@@ -69,8 +59,12 @@
 						<div class="modelboxs">
 							<div class="levelTwoTitle"><span></span>全省人才分布</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div id="emmodelThreeEchartsOne"></div>
-								<div id="emmodelThreeEchartsTwo"></div>
+								<div class="emmodelThreeEchartsOne">
+									<emecharts-one :id='"emmodelThreeEchartsOne"' :datas='modelThreeDataOne'></emecharts-one>
+								</div>
+								<div class="emmodelThreeEchartsTwo">
+									<emecharts-two :id='"emmodelThreeEchartsTwo"' :datas='modelThreeDataTwo'></emecharts-two>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -80,14 +74,9 @@
 				<el-col :span='24'>
 					<div class="modelForeBox">
 						<div class="modelboxs">
-							<div class="levelTwoTitle"><span></span>主要城市人才分布
-								<div class="buttonsBox">
-									<div @click="modelForeChange(1)" :class="modelForeIndex==1?'choosen':''">学历分布</div>
-									<div @click="modelForeChange(2)" :class="modelForeIndex==2?'choosen':''">行业分布</div>
-								</div>
-							</div>
+							<subheading :items='modelForeList' :titles='"主要城市人才分布"' @changeIndex='modelForeChange'></subheading>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<map-echarts :id = '"emmodelForeEchartsOne"' :datas = 'modelForeDataOne'></map-echarts>
+								<map-echarts :id = '"emmodelForeEchartsOne"' :datas = 'modelForeDataOne[modelForeIndex]' v-if="showModelFore"></map-echarts>
 							</div>
 						</div>
 					</div>
@@ -125,7 +114,9 @@
 						<div class="modelboxs">
 							<div class="levelTwoTitle"><span></span>分行业在岗职工平均工资</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div id="emmodelSevenEchartsOne"></div>
+								<div class="emmodelSevenEchartsOne">
+									<emecharts-three :id='"emmodelSevenEchartsOne"' :datas='modelSevenDataOne'></emecharts-three>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -138,1079 +129,256 @@
 <script>
 	import initEchartsone from '../initEchartsone.vue'
 	import initEchartsseven from '../initEchartsseven.vue'
+	import emechartsOne from '../emechartsOne.vue'
+	import emechartsTwo from '../emechartsTwo.vue'
+	import emechartsThree from '../emechartsThree.vue'
 	import mapEcharts from '../mapEcharts.vue'
+	import subheading from '../subheading.vue'
+	import {employmentApi} from '../../util/api.js'
 	export default{
-		components:{initEchartsone,initEchartsseven,mapEcharts},
+		components:{subheading,initEchartsone,initEchartsseven,mapEcharts,emechartsOne,emechartsTwo,emechartsThree},
 		data(){
 			return{
-				modelOneIndex:1,
-				modelForeIndex:1,
-				modelOneDataOne:{
+				loading:true,
+				fullscreenLoading: true,
+				modelOneList:[
+					{label: '总人口数', value: 1},
+					{label: '按产业', value: 2},
+					{label: '按城乡', value: 3}
+				],
+				modelForeList:[
+					{label: '学历分布', value: 1},
+					{label: '行业分布', value: 2}
+				],
+				modelOneDetail:{
+					qshcy:0,
+					cyratio:0,
+					type:'',
+					ldrk:0,
+					year:2017
+				},
+				modelOneDataOne:[
+				{
 					unit:'单位(万人)',
 					legendList:['全社会从业人员','劳动人员人口'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[1500,600,700,500,1000],
-					dataListTwo:[500,500,500,500,500],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc56a','#ffd99e']
-				},
+				},{
+					unit:'单位(万人)',
+					type:3,
+					legendList:['第一产业从业','第二产业从业','第三产业从业'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					dataListThree:[],
+					color:['#487fff','#84a9ff','#ffc56a','#ffd99e','#f0db4b','#fbeb81']
+				},{
+					unit:'单位(万人)',
+					legendList:['城镇从业人员','农村人员人口'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc56a','#ffd99e']
+				}],
+				showModelOne:true,
+				modelOneIndex:0,
 				modelTwoDataOne:{
+					year:0,
+					xzjyrs:0,
+					xzjyRatio:0,
+					syrs:0,
+					syRatio:0,
 					unit:['单位(万人)','同比(%)'],
 					legendList:['新增就业人口','失业人数','新增就业人数同比','失业人数同比'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[1500,600,700,500,1000],
-					dataListTwo:[300,200,500,200,300],
-					dataListThree:[2.3,3.2,2.4,3.4,1.2],
-					dataListFore:[3.2,3.4,1.6,2.9,1.1],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					dataListThree:[],
+					dataListFore:[],
 					color:['#487fff','#84a9ff','#f0db4b','#fbeb81','#ffc770','#5bb8ff']
 				},
-				modelForeDataOne:{
+				modelThreeDataOne:{
+					dataList:[]
+				},
+				modelThreeDataTwo:{
+					dataListOne:[],
+					dataListTwo:[],
+				},
+				modelForeDataOne:[{
 					type:2,
 					unit:'人',
 					size:[0,1000],
 					title:'',
 					data : [
-						{
-							name:'武汉市',
-							value:988,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'恩施土家族苗族自治州',
-							value:188,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'十堰市',
-							value:688,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'宜昌市',
-							value:888,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'襄阳市',
-							value:888,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'黄冈市',
-							value:288,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'荆州市',
-							value:388,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'荆门市',
-							value:288,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'咸宁市',
-							value:388,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'随州市',
-							value:388,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'孝感市',
-							value:488,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'黄石市',
-							value:388,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'神农架林区',
-							value:88,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'天门市',
-							value:288,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'仙桃市',
-							value:388,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'潜江市',
-							value:488,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
-						{
-							name:'鄂州市',
-							value:588,
-							dataList:[
-								{
-									name:'博士研究生',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'硕士研究生',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'大学本科',
-									value:'22739',
-									unit:'人'
-								},
-								{
-									name:'大学专科',
-									value:'11930',
-									unit:'人'
-								},
-							]
-						},
+						
 					]
-				},
+				},{
+					type:2,
+					unit:'人',
+					size:[0,1000],
+					title:'',
+					data : [
+						
+					]
+				}],
+				showModelFore:true,
+				modelForeIndex:0,
 				modelFiveDataOne:{
 					type:2,
 					unit:'人',
 					title:'',
 					size:[0,1000],
 					data : [
-						{
-							name:'武汉市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'恩施土家族苗族自治州',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'十堰市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'宜昌市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'襄阳市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'黄冈市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'荆州市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'荆门市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'咸宁市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'随州市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'孝感市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'黄石市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'神农架林区',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'天门市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'仙桃市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'潜江市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
-						{
-							name:'鄂州市',
-							dataList:[
-								{
-									name:'普通本专科在校学生数',
-									value:'391',
-									unit:'人'
-								},
-								{
-									name:'从事科技活动人员人数',
-									value:'2209',
-									unit:'人'
-								},
-								{
-									name:'公共图书馆图书总藏量',
-									value:'80',
-									unit:'万册'
-								}
-							]
-						},
+						
 					]
 				},
 				modelSixDataOne:{
-					unit:['单位(万人)','同比(%)'],
+					unit:['单位(万元)','同比(%)'],
 					legendList:['职工年平均工资','同比名义增长率','排除物价因素增长率'],
-					nameList:['2012','2013' ,'2014','2015','2016','2017','2018'],
-					dataListOne:[300,400,500,600,700,500,1000],
-					dataListTwo:[1.9,2.8,3.2,3.4,1.6,2.9,1.1],
-					dataListThree:[1.1,1.9,2.3,3.2,2.4,3.4,1.2],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					dataListThree:[],
 					color:['#ffc56a','#ffd99e','#5ab7ff','#47e57f']
 				},
+				modelSevenDataOne:{
+					nameList:[],
+					dataListOne:[]
+				},
+				showAll:false,
+				year:2017
 			}
 		},
 		mounted() {
-			this.initModelThreeEchartsOne('emmodelThreeEchartsOne')
-			this.initModelThreeEchartsTwo('emmodelThreeEchartsTwo')
-			this.initModelSevenEchartsOne('emmodelSevenEchartsOne')
+			this.getData(2017);
 		},
 		methods:{
+			async getData(params){
+				this.loading = true;
+				this.showAll = false;
+				this.modelOneIndex = 0;
+				this.modelForeIndex = 0;
+				this.year = params;
+				try {
+					let res = await employmentApi(params)
+					console.log(res)
+					this.$store.commit('saveemploymentData',res.data)
+				} catch (err) {
+					console.log(err)
+				} 
+				var allList = this.$store.state.employmentData;
+				this.modelOneDataOne[0].nameList = [],this.modelOneDataOne[1].nameList = [],this.modelOneDataOne[2].nameList = []
+				this.modelOneDataOne[0].dataListOne = [],this.modelOneDataOne[1].dataListOne = [],this.modelOneDataOne[2].dataListOne = []
+				this.modelOneDataOne[0].dataListTwo = [],this.modelOneDataOne[1].dataListTwo = [],this.modelOneDataOne[2].dataListTwo = [],this.modelOneDataOne[1].dataListThree=[]
+				for(var i in allList.jysrOne.qshcyrsListLeft){
+					this.modelOneDetail.year = allList.jysrOne.qshcyrsListLeft[0].year
+					this.modelOneDetail.qshcy = allList.jysrOne.qshcyrsListLeft[0].cyryNum
+					if(Number(allList.jysrOne.qshcyrsListLeft[0].cyryRatio)>0){
+						this.modelOneDetail.cyratio = Number(allList.jysrOne.qshcyrsListLeft[0].cyryRatio) * 100
+						this.modelOneDetail.type='up'
+					}else if(Number(allList.jysrOne.qshcyrsListLeft[0].cyryRatio)<0){
+						this.modelOneDetail.cyratio = Number(allList.jysrOne.qshcyrsListLeft[0].cyryRatio) * -100
+						this.modelOneDetail.type='down'
+					}
+					this.modelOneDetail.ldrk = allList.jysrOne.qshcyrsListLeft[0].ldrkNum 
+				}
+				for( var i in allList.jysrOne.qshcyrsList){
+					this.modelOneDataOne[0].nameList.push(allList.jysrOne.qshcyrsList[i].year)
+					this.modelOneDataOne[0].dataListOne.push(allList.jysrOne.qshcyrsList[i].cyryNum)
+					this.modelOneDataOne[0].dataListTwo.push(allList.jysrOne.qshcyrsList[i].ldrkNum)
+				}
+				for(var i in allList.jysrOne.fcycyqkList){
+					this.modelOneDataOne[1].nameList.push(allList.jysrOne.fcycyqkList[i].year)
+					this.modelOneDataOne[1].dataListOne.push(allList.jysrOne.fcycyqkList[i].first)
+					this.modelOneDataOne[1].dataListTwo.push(allList.jysrOne.fcycyqkList[i].second)
+					this.modelOneDataOne[1].dataListThree.push(allList.jysrOne.fcycyqkList[i].third)
+				}
+				for( var i in allList.jysrOne.fcxcyrsList){
+					this.modelOneDataOne[2].nameList.push(allList.jysrOne.fcxcyrsList[i].year)
+					this.modelOneDataOne[2].dataListOne.push(allList.jysrOne.fcxcyrsList[i].urban)
+					this.modelOneDataOne[2].dataListTwo.push(allList.jysrOne.fcxcyrsList[i].rural)
+				}
+				this.modelTwoDataOne.nameList=[],this.modelTwoDataOne.dataListOne=[],this.modelTwoDataOne.dataListTwo=[],this.modelTwoDataOne.dataListThree=[],this.modelTwoDataOne.dataListFore=[];
+				this.modelTwoDataOne.year = allList.jysrTwo.jyqkListLeft[0].year;
+				this.modelTwoDataOne.xzjyrs = allList.jysrTwo.jyqkListLeft[0].xzjyrs;
+				this.modelTwoDataOne.xzjyRatio = Number(allList.jysrTwo.jyqkListLeft[0].xzjyRatio);
+				this.modelTwoDataOne.syrs = allList.jysrTwo.jyqkListLeft[0].syrs;
+				this.modelTwoDataOne.syRatio = Number(allList.jysrTwo.jyqkListLeft[0].syRatio);
+				for(var i in allList.jysrTwo.jyqkList){
+					this.modelTwoDataOne.nameList.push(allList.jysrTwo.jyqkList[i].year)
+					this.modelTwoDataOne.dataListOne.push(allList.jysrTwo.jyqkList[i].xzjyrs)
+					this.modelTwoDataOne.dataListTwo.push(allList.jysrTwo.jyqkList[i].syrs)
+					this.modelTwoDataOne.dataListThree.push(allList.jysrTwo.jyqkList[i].xzjyRatio)
+					this.modelTwoDataOne.dataListFore.push(allList.jysrTwo.jyqkList[i].syRatio)
+				}
+				this.modelThreeDataOne.dataList=[
+					{name:'专科生',value:Number(allList.jysrThree.xlqkMap.xlqkList[0].zksNum),selected:true},
+					{name:'硕士生',value:Number(allList.jysrThree.xlqkMap.xlqkList[0].sssNum)},
+					{name:'本科生',value:Number(allList.jysrThree.xlqkMap.xlqkList[0].bksNum)},
+					{name:'博士生',value:Number(allList.jysrThree.xlqkMap.xlqkList[0].bssNum)},
+				]
+				this.modelThreeDataTwo.dataListOne = [
+					{value:45,name:'第一产业',selected:true},{value:56,name:'第二产业'},{value:76,name:'第三产业'}
+				]
+				this.modelThreeDataTwo.dataListTwo = [
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].nlnyNum),name:'农、林、牧、渔业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].ckgyNum),name:'采矿供应业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].wtylNum),name:'文体娱乐业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].jzdcNum),name:'建筑地产业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].ggglNum),name:'公共管理业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].jyNum),name:'教育业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].wsgzNum),name:'卫生工作'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].jtysNum),name:'交通运输业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].otherNum),name:'其他产业'},
+					
+				]
+				//缺模块四地图数据
+				this.modelForeDataOne[0].data = allList.jysrFour.jysrFourVos;
+				this.modelForeDataOne[1].data = allList.jysrFour.cshyFourVos;
+				//缺模块五地图数据
+				this.modelFiveDataOne.data=allList.jysrFive.jysrFiveVos;
+				
+				this.modelSixDataOne.nameList=[],this.modelSixDataOne.dataListOne=[],this.modelSixDataOne.dataListTwo=[],this.modelSixDataOne.dataListThree=[]
+				for(var i in allList.jysrSix.zgpjgzList){
+					this.modelSixDataOne.nameList.push(allList.jysrSix.zgpjgzList[i].year)
+					this.modelSixDataOne.dataListOne.push(allList.jysrSix.zgpjgzList[i].zgpjgz)
+					this.modelSixDataOne.dataListTwo.push(allList.jysrSix.zgpjgzList[i].tbRatio)
+					this.modelSixDataOne.dataListThree.push(allList.jysrSix.zgpjgzList[i].pcRatio)
+				}
+				this.modelSevenDataOne.nameList=[],this.modelSevenDataOne.dataListOne=[]
+				for(var i in allList.jysrSeven.fhypjgzList){
+					this.modelSevenDataOne.nameList.push(allList.jysrSeven.fhypjgzList[i].workName)
+					this.modelSevenDataOne.dataListOne.push(allList.jysrSeven.fhypjgzList[i].pjgz)
+				}
+				
+				this.showAll = true;
+				this.loading = false;
+			}, 
 			modelOneChange(e){
-				this.modelOneIndex = e;
+				this.modelOneIndex = e-1;
+				console.log(e);
+				this.showModelOne = false;
+				this.$nextTick(()=>{
+					this.showModelOne = true;
+				})
 			},
 			modelForeChange(e){
-				this.modelForeIndex = e;
-			},
-			
-			
-			initModelThreeEchartsOne(dom,data){
-				var rich = {
-					numOne:{
-						fontSize: 16,
-						color:'#0487ff',
-						fontStyle:'italic'
-					},
-					numTwo:{
-						fontSize: 20,
-						color:'#0487ff'
-					},
-					numThree:{
-						fontSize: 14,
-						color:'#333'
-					},
-				};
-				var echartData = [{value:45,name:'高中',selected:true},{value:56,name:'大专'},{value:76,name:'本科'},{value:22,name:'硕士'},{value:8,name:'博士'}];
-				var color = ['#6aadff','#ffec6a','#ffc56a','#32d89f','#5ed8f7'];
-				let myChart = this.$echarts.init(document.getElementById(dom));
-				myChart.setOption({
-					tooltip : {
-						trigger: 'item',
-						formatter: "{a} <br/>{b} : {c} 万人({d}%)"
-					},
-					legend:{show:false},
-					color:color,
-					series :[
-						{
-							name:'学历占比',
-							type: 'pie',
-							selectedMode: 'single',
-							radius : '55%',
-							center: ['50%', '50%'],
-							data:echartData,
-							itemStyle: {
-								emphasis: {
-									shadowBlur: 10,
-									shadowOffsetX: 0,
-									shadowColor: 'rgba(0, 0, 0, 0.5)'
-								}
-							},
-							label:{
-								normal:{
-									rich: rich,
-									formatter:function(params, ticket, callback){
-										var total = 0;
-										var percent = 0;
-										echartData.forEach(function(value, index, array,name) {
-											total += value.value;
-										});
-										percent = ((params.value / total) * 100).toFixed(1);
-										return '{numThree|' + params.name + '}{numOne|' + params.value + '}{numThree| 万人}\n{numTwo|' + percent + '%}';
-									}
-								}
-							}
-						}
-					]
+				this.modelForeIndex = e-1;
+				console.log(e);
+				this.showModelFore = false;
+				this.$nextTick(()=>{
+					this.showModelFore = true;
 				})
 			},
-			initModelThreeEchartsTwo(dom,data){
-				var echartDataOne = [{value:45,name:'第一产业',selected:true},{value:56,name:'第二产业'},{value:76,name:'第三产业'}];
-				var echartDataTwo = [{value:45,name:'信息传输、软件和信息技术服务'},{value:56,name:'文化、体育和娱乐业'},{value:76,name:'采矿业、制造业、电力、燃气及水的生产和供应业'},{value:76,name:'农、林、牧、渔业'},{value:76,name:'其他产业'}];
-				var color = ['#6aadff','#ffec6a','#ffc56a','#32d89f','#5ed8f7'];
-				var rich = {
-					numOne:{
-						fontSize: 16,
-						color:'#0487ff',
-						fontStyle:'italic'
-					},
-					numTwo:{
-						fontSize: 20,
-						color:'#0487ff'
-					},
-					numThree:{
-						fontSize: 14,
-						color:'#333'
-					},
-				};
-				let myChart = this.$echarts.init(document.getElementById(dom));
-				myChart.setOption({
-					tooltip: {
-						trigger: 'item',
-						formatter: "{a} <br/>{b}: {c} 万人({d}%)"
-					},
-					legend:{show:false},
-					color:color,
-					series :[
-						{
-							name:'产业分布',
-							type: 'pie',
-							selectedMode: 'single',
-							radius: [0, '36%'],
-							center: ['50%', '50%'],
-							data:echartDataOne,
-							itemStyle: {
-								emphasis: {
-									shadowBlur: 10,
-									shadowOffsetX: 0,
-									shadowColor: 'rgba(0, 0, 0, 0.5)'
-								}
-							},
-							label:{
-								normal: {
-									position: 'inner'
-								}
-							}
-						},
-						{
-							name:'行业分布',
-							type:'pie',
-							radius: ['48%', '63%'],
-							label:{
-								normal:{
-									rich: rich,
-									formatter:function(params, ticket, callback){
-										var total = 0;
-										var percent = 0;
-										echartDataTwo.forEach(function(value, index, array,name) {
-											total += value.value;
-										});
-										percent = ((params.value / total) * 100).toFixed(1);
-										return '{numThree|' + params.name + '}{numOne|' + params.value + '}{numThree| 万人}\n{numTwo|' + percent + '%}';
-									}
-								}
-							},
-							data:echartDataTwo
-						}
-					]
-					
-				})
-			},
-			
-			initModelSevenEchartsOne(dom,data){
-				var namelist = ['电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业','电力、燃气及水的生产和供应业'];
-				var valuelist = [18000,17000,16000,15000,14000,13900,13800,13522,13000,12900,12500,12100,11600,11000];
-				let myChart = this.$echarts.init(document.getElementById(dom));
-				myChart.setOption({
-					grid: {
-						left: '5%',
-						right: '5%',
-						bottom: '8%',
-						top: '16%',
-						containLabel: true
-					},
-					legend: {
-					    show: true,
-						top:'20',
-						right:'20',
-						itemGap:20,
-					    textStyle: {
-					      color: "#666"
-					    },
-					},
-					tooltip: {
-						trigger: 'axis'
-					},
-					xAxis: {
-						type: 'category',
-						data: namelist,
-						axisPointer: {
-							type: 'shadow'
-						},
-						axisLine:{
-							show:false,
-							lineStyle:{
-								color:"#666"
-							}
-						},
-						axisTick:{
-							show:false
-						},
-						axisLabel:{
-							formatter:function(val){
-								var strs = val.split('');
-								var str = '';
-								for(var i=0;i<strs.length;i++){
-									if(i%3==0&&i!=0){
-										str+=strs[i]+'\n';
-									}else{
-										str+=strs[i];
-									}
-								}
-								return str
-							}
-						}
-					},
-					yAxis:{
-						type: 'value',
-						name: '单位(元)',
-						axisLine:{
-							show:false,
-							lineStyle:{
-								color:"#666"
-							}
-						},
-						splitLine:{
-							show:true,
-							lineStyle:{
-								color:"#eeeeee"
-							}
-						},
-						axisTick:{
-							show:false
-						}
-					},
-					series:[
-						{
-							name:'平均工资',
-							type:'bar',
-							barWidth: 18,
-							itemStyle: {
-							   color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-							            offset: 0,
-							            color: "#487fff"
-							        },
-							        {
-							            offset: 1,
-							            color: "#84a9ff"
-							        }
-							    ])
-							},
-							data:valuelist
-						}
-					]
-				})
+			openFullScreen2() {
+				const loading = this.$loading({
+					lock: this.fullscreenLoading,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.7)'
+				});
 			}
 		}
 	}
@@ -1333,12 +501,12 @@
 		.modelThreeBox{
 			height: 432px;
 			background: #fff;
-			#emmodelThreeEchartsOne{
+			.emmodelThreeEchartsOne{
 				width: 45%;
 				height: 100%;
 				float: left;
 			}
-			#emmodelThreeEchartsTwo{
+			.emmodelThreeEchartsTwo{
 				width: 55%;
 				height: 100%;
 				float: left;
@@ -1363,7 +531,7 @@
 		.modelSevenBox{
 			height: 418px;
 			background: #fff;
-			#emmodelSevenEchartsOne{
+			.emmodelSevenEchartsOne{
 				width: 100&;
 				height: 100%;
 			}

@@ -16,7 +16,7 @@
 				series = [{
 						name:this.datas.legendList[0],
 						type:'bar',
-						barWidth: 14,
+						barWidth: 20,
 						itemStyle: {
 							color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
 									offset: 0,
@@ -64,7 +64,7 @@
 				series = [{
 						name:this.datas.legendList[0],
 						type:'bar',
-						barWidth: 14,
+						barWidth: 20,
 						itemStyle: {
 							color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
 									offset: 0,
@@ -81,7 +81,7 @@
 					{
 						name:this.datas.legendList[1],
 						type:'bar',
-						barWidth: 14,
+						barWidth: 20,
 						itemStyle: {
 							color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
 									offset: 0,

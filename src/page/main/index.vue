@@ -56,7 +56,7 @@
 			</el-aside>
 		    <el-main>
 				<div class="searchBox">
-					<div class="labels">区域:</div>
+					<!-- <div class="labels">区域:</div>
 					<el-select v-model="choosenCity" clearable placeholder="请选择" style='line-height: 80px;float: left;'> 
 					    <el-option
 					      v-for="item in cityLists"
@@ -64,8 +64,8 @@
 					      :label="item.label"
 					      :value="item.value">
 					    </el-option>
-					</el-select>
-					<div class="labels" style="margin-left: 70px;">时间:</div>
+					</el-select> -->
+					<div class="labels" style="margin-left: 20px;">时间:</div>
 					<el-select v-model="choosenYear" clearable placeholder="请选择" style='line-height: 80px;float: left;'> 
 					    <el-option
 					      v-for="item2 in yearLists"
@@ -80,19 +80,19 @@
 					</div>
 				</div>
 				<transition name="el-zoom-in-center" style="position: absolute;">
-					<population v-if="itemIndex==11" style="position: absolute;"></population>
+					<population v-if="itemIndex==11" style="position: absolute;" ref='population'></population>
 				</transition>
 				<transition name="el-zoom-in-center">
-					<employment v-if="itemIndex==12" style="position: absolute;"></employment>
+					<employment v-if="itemIndex==12" style="position: absolute;" ref='employment'></employment>
 				</transition>
 				<transition name="el-zoom-in-center">
-					<socialSecurity v-if="itemIndex==13" style="position: absolute;"></socialSecurity>
+					<socialSecurity v-if="itemIndex==13" style="position: absolute;" ref='socialSecurity'></socialSecurity>
 				</transition>
 				<transition name="el-zoom-in-center">
-					<economics v-if="itemIndex==14" style="position: absolute;"></economics>
+					<economics v-if="itemIndex==14" style="position: absolute;" ref='economics'></economics>
 				</transition>
 				<transition name="el-zoom-in-center">
-					<medical v-if="itemIndex==15" style="position: absolute;"></medical>
+					<medical v-if="itemIndex==15" style="position: absolute;" ref='medical'></medical>
 				</transition>
 			</el-main>
 		  </el-container>
@@ -131,24 +131,24 @@
 				],
 				yearLists:[
 					{
-						value:1,
-						label:2019
-					},
-					{
-						value:2,
-						label:2018
-					},
-					{
-						value:3,
+						value:2017,
 						label:2017
 					},
 					{
-						value:4,
+						value:2016,
 						label:2016
+					},
+					{
+						value:2015,
+						label:2015
+					},
+					{
+						value:2014,
+						label:2014
 					},
 				],
 				choosenCity:'',
-				choosenYear:2019
+				choosenYear:2017
 			}
 		},
 		components:{population,employment,economics,socialSecurity,medical},
@@ -162,13 +162,24 @@
 			showMain(e){
 				console.log(e)
 				this.itemIndex = e;
+				this.resetting()
 			},
 			resetting(){
 				this.choosenCity = '';
-				this.choosenYear = 2019;
+				this.choosenYear = 2017;
 			},
 			inquiry(){
+				console.log(this.choosenYear)
+				if(this.itemIndex==11){this.$refs.population.getData(this.choosenYear)}
+				if(this.itemIndex==12){this.$refs.employment.getData(this.choosenYear)}
+				if(this.itemIndex==13){this.$refs.socialSecurity.getData(this.choosenYear)}
+				if(this.itemIndex==14){this.$refs.economics.getData(this.choosenYear)}
+				if(this.itemIndex==15){this.$refs.medical.getData(this.choosenYear)}
 				
+				
+				// this.$refs.socialSecurity.getData(this.choosenYear)
+				// this.$refs.economics.getData(this.choosenYear)
+				// this.$refs.medical.getData(this.choosenYear)
 			}
 		}
 	}

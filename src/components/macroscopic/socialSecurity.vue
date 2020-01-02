@@ -1,116 +1,109 @@
 <template>
 	<div class="mainbox">
-		<div class="titleBox">湖北省<span>2019年</span>社会保障情况
+		<div class="titleBox">湖北省<span>{{year}}年</span>社会保障情况
 			<div class="buttons">下载</div>
 		</div>
-		<div class="modelDetailsBox">
-			<div class="modelOneBox">
-				<div class="modelboxs">
-					<div class="levelTwoTitle"><span></span>各项社会保险征缴情况
-						<div class="buttonsBox">
-							<div @click="modelOneChange(1)" :class="modelOneIndex==1?'choosen':''">征缴收入</div>
-							<div @click="modelOneChange(2)" :class="modelOneIndex==2?'choosen':''">支出</div>
+		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
+		<div class="modelDetailsBox" v-if="showAll">
+			<el-row>
+				<el-col :span='24'>
+					<div class="modelOneBox">
+						<div class="modelboxs">
+							<subheading :items='modelOneList' :titles='"各项社会保险征缴情况"' @changeIndex='modelOneChange'></subheading>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<div class="levelTwoechartsBoxs">
+									<init-echartsthree :id='"somodelOneEchartsOne"' :datas = 'modelOneDataOne[modelOneIndex]' v-if="showModelOne"></init-echartsthree>
+								</div>
+								<div class="levelTwoechartsBoxs">
+									<emecharts-one :id='"somodelOneEchartsTwo"' :datas='modelOneDataTwo[modelOneIndex]' v-if="showModelOne"></emecharts-one>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div style="width: 100%;height: calc(100% - 56px);">
-						<div class="levelTwoechartsBoxs">
-							<init-echartsthree :id='"somodelOneEchartsOne"' :datas = 'modelOneDataOne'></init-echartsthree>
-						</div>
-						<div id="somodelOneEchartsTwo" class="levelTwoechartsBoxs"></div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="modelTwoBox">
-				<div class="modelboxs">
-					<div class="levelTwoTitle"><span></span>各项社会保险征缴走势分析
-						<div class="buttonsBox">
-							<div @click="modelTwoChange(1)" :class="modelTwoIndex==1?'choosen':''">养老保险</div>
-							<div @click="modelTwoChange(2)" :class="modelTwoIndex==2?'choosen':''">医疗保险</div>
-							<div @click="modelTwoChange(3)" :class="modelTwoIndex==3?'choosen':''">失业保险</div>
-							<div @click="modelTwoChange(4)" :class="modelTwoIndex==4?'choosen':''">工伤保险</div>
-							<div @click="modelTwoChange(5)" :class="modelTwoIndex==5?'choosen':''">生育保险</div>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span='24'>
+					<div class="modelTwoBox">
+						<div class="modelboxs">
+							<subheading :items='modelTwoList' :titles='"各项社会保险征缴走势分析"' @changeIndex='modelTwoChange'></subheading>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<div class="levelTwoechartsBoxs">
+									<init-echartsone :id='"somodelTwoEchartsOne"' :datas = 'modelTwoDataOne[modelTwoIndex]' v-if="showModelTwo"></init-echartsone>
+								</div>
+								<div class="levelTwoechartsBoxs">
+									<init-echartstwo :id='"somodelTwoEchartsTwo"' :datas = 'modelTwoDataTwo[modelTwoIndex]' v-if="showModelTwo"></init-echartstwo>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div style="width: 100%;height: calc(100% - 56px);">
-						<div class="levelTwoechartsBoxs">
-							<init-echartsone :id='"somodelTwoEchartsOne"' :datas = 'modelTwoDataOne'></init-echartsone>
-						</div>
-						<div class="levelTwoechartsBoxs">
-							<init-echartstwo :id='"somodelTwoEchartsTwo"' :datas = 'modelTwoDataTwo'></init-echartstwo>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="modelThreeBox">
-				<div class="modelboxs">
-					<div class="levelTwoTitle"><span></span>各项社会保险参保人数</div>
-					<div style="width: 100%;height: calc(100% - 56px);">
-						<div class="levelTwoechartsBoxs">
-							<init-echartsthree :id='"somodelThreeEchartsOne"' :datas = 'modelThreeDataOne'></init-echartsthree>
-						</div>
-						<div class="levelTwoechartsBoxs">
-							<init-echartsfore :id='"somodelThreeEchartsTwo"' :datas = 'modelThreeDataTwo'></init-echartsfore>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span='24'>
+					<div class="modelThreeBox">
+						<div class="modelboxs">
+							<div class="levelTwoTitle"><span></span>各项社会保险参保人数</div>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<div class="levelTwoechartsBoxs">
+									<init-echartsthree :id='"somodelThreeEchartsOne"' :datas = 'modelThreeDataOne'></init-echartsthree>
+								</div>
+								<div class="levelTwoechartsBoxs">
+									<init-echartsfore :id='"somodelThreeEchartsTwo"' :datas = 'modelThreeDataTwo'></init-echartsfore>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			
-			<div class="modelForeBox">
-				<div class="modelboxs">
-					<div class="levelTwoTitle"><span></span>各项社会参保人数走势分析
-						<div class="buttonsBox">
-							<div @click="modelForeChange(1)" :class="modelForeIndex==1?'choosen':''">养老保险</div>
-							<div @click="modelForeChange(2)" :class="modelForeIndex==2?'choosen':''">医疗保险</div>
-							<div @click="modelForeChange(3)" :class="modelForeIndex==3?'choosen':''">失业保险</div>
-							<div @click="modelForeChange(4)" :class="modelForeIndex==4?'choosen':''">工伤保险</div>
-							<div @click="modelForeChange(5)" :class="modelForeIndex==5?'choosen':''">生育保险</div>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span='24'>
+					<div class="modelForeBox">
+						<div class="modelboxs">
+							<subheading :items='modelForeList' :titles='"各项社会参保人数走势分析"' @changeIndex='modelForeChange'></subheading>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<div class="levelTwoechartsBoxs">
+									<init-echartsfive :id='"somodelForeEchartsOne"' :datas = 'modelForeDataOne[modelForeIndex]' v-if="showModelFore"></init-echartsfive>
+								</div>
+								<div class="levelTwoechartsBoxs">
+									<init-echartsthree :id='"somodelForeEchartsTwo"' :datas = 'modelForeDataTwo[modelForeIndex]' v-if="showModelFore"></init-echartsthree>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div style="width: 100%;height: calc(100% - 56px);">
-						<div class="levelTwoechartsBoxs">
-							<init-echartsfive :id='"somodelForeEchartsOne"' :datas = 'modelForeDataOne'></init-echartsfive>
-						</div>
-						<div class="levelTwoechartsBoxs">
-							<init-echartsthree :id='"somodelForeEchartsTwo"' :datas = 'modelForeDataTwo'></init-echartsthree>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="modelFiveBox">
-				<div class="modelboxs">
-					<div class="levelTwoTitle"><span></span>各项社会保险参保情况地区分析
-						<div class="buttonsBox">
-							<div @click="modelFiveChange(1)" :class="modelFiveIndex==1?'choosen':''">养老保险</div>
-							<div @click="modelFiveChange(2)" :class="modelFiveIndex==2?'choosen':''">医疗保险</div>
-							<div @click="modelFiveChange(3)" :class="modelFiveIndex==3?'choosen':''">失业保险</div>
-							<div @click="modelFiveChange(4)" :class="modelFiveIndex==4?'choosen':''">工伤保险</div>
-							<div @click="modelFiveChange(5)" :class="modelFiveIndex==5?'choosen':''">生育保险</div>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span='24'>
+					<div class="modelFiveBox">
+						<div class="modelboxs">
+							<subheading :items='modelFiveList' :titles='"各项社会保险参保情况地区分析"' @changeIndex='modelFiveChange'></subheading>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<div style="width: 100%;height: 100%;">
+									<init-echartsone :id='"somodelFiveEchartsOne"' :datas = 'modelFiveData[modelFiveIndex]' v-if="showModelFive"></init-echartsone>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div style="width: 100%;height: calc(100% - 56px);">
-						<div style="width: 100%;height: 100%;">
-							<init-echartsone :id='"somodelFiveEchartsOne"' :datas = 'modelFiveData'></init-echartsone>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span='24'>
+					<div class="modelSixBox">
+						<div class="modelboxs">
+							<div class="levelTwoTitle"><span></span>公积金缴纳情况分析</div>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<div style="float: left;width: 40%;margin: 0 5%;height: 100%;">
+									<init-echartsone :id='"somodelSixEchartsOne"' :datas = 'modelSixDataOne'></init-echartsone>
+								</div>
+								<div style="float: left;width: 40%;margin: 0 5%;height: 100%;">
+									<init-echartsone :id='"somodelSixEchartsTwo"' :datas = 'modelSixDataTwo'></init-echartsone>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			
-			<div class="modelSixBox">
-				<div class="modelboxs">
-					<div class="levelTwoTitle"><span></span>公积金缴纳情况分析</div>
-					<div style="width: 100%;height: calc(100% - 56px);">
-						<div style="float: left;width: 40%;margin: 0 5%;height: 100%;">
-							<init-echartsone :id='"somodelSixEchartsOne"' :datas = 'modelSixDataOne'></init-echartsone>
-						</div>
-						<div style="float: left;width: 40%;margin: 0 5%;height: 100%;">
-							<init-echartsone :id='"somodelSixEchartsTwo"' :datas = 'modelSixDataTwo'></init-echartsone>
-						</div>
-					</div>
-				</div>
-			</div>
+				</el-col>
+			</el-row>
 		</div>
 	</div>
 </template>
@@ -120,160 +113,453 @@
 	import initEchartstwo from '../initEchartstwo.vue'
 	import initEchartsthree from '../initEchartsthree.vue'
 	import initEchartsfore from '../initEchartsfore.vue'
+	import emechartsOne from '../emechartsOne.vue'
 	import initEchartsfive from '../initEchartsfive.vue'
+	import subheading from '../subheading.vue'
+	import {socialSecurityApi} from '../../util/api.js'
 	export default{
-		components:{initEchartsone,initEchartstwo,initEchartsthree,initEchartsfore,initEchartsfive},
+		components:{emechartsOne,subheading,initEchartsone,initEchartstwo,initEchartsthree,initEchartsfore,initEchartsfive},
 		data(){
 			return{
-				modelOneIndex:1,
-				modelTwoIndex:1,
-				modelForeIndex:1,
-				modelFiveIndex:1,
-				modelOneDataOne:{
+				modelOneList:[
+					{label: '征缴收入', value: 1},
+					{label: '支出', value: 2}
+				],
+				modelTwoList:[
+					{label: '养老保险', value: 1},
+					{label: '医疗保险', value: 2},
+					{label: '失业保险', value: 3},
+					{label: '工伤保险', value: 4},
+					{label: '生育保险', value: 5}
+				],
+				modelForeList:[
+					{label: '养老保险', value: 1},
+					{label: '医疗保险', value: 2},
+					{label: '失业保险', value: 3},
+					{label: '工伤保险', value: 4},
+					{label: '生育保险', value: 5}
+				],
+				modelFiveList:[
+					{label: '养老保险', value: 1},
+					{label: '医疗保险', value: 2},
+					{label: '失业保险', value: 3},
+					{label: '工伤保险', value: 4},
+					{label: '生育保险', value: 5}
+				],
+				modelOneDataOne:[{
 					unit:'亿元',
 					titles:'',
 					nameList:['养老保险','医疗保险','失业保险','工伤保险','生育保险'],
-					dataListOne:[2200, 2320, 2010, 2340, 2900],
+					dataListOne:[],
 					color:['#ffd99d','#ffc66c']
-				},
-				modelTwoDataOne:{
+				},{
+					unit:'亿元',
+					titles:'',
+					nameList:['养老保险','医疗保险','失业保险','工伤保险','生育保险'],
+					dataListOne:[],
+					color:['#ffd99d','#ffc66c']
+				}],
+				modelOneDataTwo:[{
+					dataList:[]
+				},{
+					dataList:[]
+				}],
+				showModelOne:true,
+				modelOneIndex:0,
+				modelTwoDataOne:[{
 					unit:'单位(万元)',
 					legendList:['征缴收入','支出'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[4500,4500,4500,4500,4500],
-					dataListTwo:[3500,3500,3500,3500,3500],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
-				},
-				modelTwoDataTwo:{
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
+				}],
+				modelTwoDataTwo:[{
 					unit:'单位(万元)',
 					legendList:['累计结余'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[4500,4500,4500,4500,4500],
+					nameList:[],
+					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
-				},
+				},{
+					unit:'单位(万元)',
+					legendList:['累计结余'],
+					nameList:[],
+					dataListOne:[],
+					color:['#80ebf5','#3dc5dd']
+				},{
+					unit:'单位(万元)',
+					legendList:['累计结余'],
+					nameList:[],
+					dataListOne:[],
+					color:['#80ebf5','#3dc5dd']
+				},{
+					unit:'单位(万元)',
+					legendList:['累计结余'],
+					nameList:[],
+					dataListOne:[],
+					color:['#80ebf5','#3dc5dd']
+				},{
+					unit:'单位(万元)',
+					legendList:['累计结余'],
+					nameList:[],
+					dataListOne:[],
+					color:['#80ebf5','#3dc5dd']
+				},],
+				showModelTwo:true,
+				modelTwoIndex:0,
 				modelThreeDataOne:{
 					unit:'万人',
 					titles:'',
 					nameList:['养老保险','医疗保险','失业保险','工伤保险','生育保险'],
-					dataListOne:[2200, 2320, 2010, 2340, 2900],
+					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
 				},
 				modelThreeDataTwo:{
 					unit:'覆盖率(%)',
 					nameList:['养老保险','医疗保险','失业保险','工伤保险','生育保险'],
-					dataListOne:[22, 23, 20, 23, 20]
+					dataListOne:[]
 				},
-				modelForeDataOne:{
+				modelForeDataOne:[{
 					unit:['单位(万人)','覆盖率(%)'],
 					legendList:['参保人数','覆盖率'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[3700, 3600, 3200, 3700, 3500],
-					dataListTwo:[27, 35, 32, 29, 39]
-				},
-				modelForeDataTwo:{
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[]
+				},{
+					unit:['单位(万人)','覆盖率(%)'],
+					legendList:['参保人数','覆盖率'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[]
+				},{
+					unit:['单位(万人)','覆盖率(%)'],
+					legendList:['参保人数','覆盖率'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[]
+				},{
+					unit:['单位(万人)','覆盖率(%)'],
+					legendList:['参保人数','覆盖率'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[]
+				},{
+					unit:['单位(万人)','覆盖率(%)'],
+					legendList:['参保人数','覆盖率'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[]
+				}],
+				modelForeDataTwo:[{
 					unit:'个月',
 					titles:'预计可发放月数',
-					nameList:['养老保险','医疗保险','失业保险','工伤保险','生育保险'],
-					dataListOne:[22, 23, 20, 23, 29],
+					nameList:[],
+					dataListOne:[],
 					color:['#84a9ff','#487fff']
-				},
+				},{
+					unit:'个月',
+					titles:'预计可发放月数',
+					nameList:[],
+					dataListOne:[],
+					color:['#84a9ff','#487fff']
+				},{
+					unit:'个月',
+					titles:'预计可发放月数',
+					nameList:[],
+					dataListOne:[],
+					color:['#84a9ff','#487fff']
+				},{
+					unit:'个月',
+					titles:'预计可发放月数',
+					nameList:[],
+					dataListOne:[],
+					color:['#84a9ff','#487fff']
+				},{
+					unit:'个月',
+					titles:'预计可发放月数',
+					nameList:[],
+					dataListOne:[],
+					color:['#84a9ff','#487fff']
+				},],
+				showModelFore:true,
+				modelForeIndex:0,
+				modelFiveData:[{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
+				},{
+					unit:'单位(万元)',
+					legendList:['征缴收入','支出'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
+				},],
+				showModelFive:true,
+				modelFiveIndex:0,
 				modelSixDataOne:{
 					unit:'单位(万人)',
 					legendList:['全年公积金缴存金额','实缴职工人数'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[4500,4500,4500,4500,4500],
-					dataListTwo:[3500,3500,3500,3500,3500],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},
 				modelSixDataTwo:{
 					unit:'单位(万元)',
 					legendList:['年末公积金贷款总额','年末公积金贷款余额'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[4500,4500,4500,4500,4500],
-					dataListTwo:[3500,3500,3500,3500,3500],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
 					color:['#80ebf5','#3dc5dd','#f0db4b','#fbeb81']
 				},
-				modelFiveData:{
-					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
-					nameList:['武汉','宜昌','黄石','襄阳','咸宁','黄冈','鄂州','十堰','荆州','孝感','神农架','仙桃','潜江','天门','随州','荆门','恩施'],
-					dataListOne:[4500,4500,4500,4500,4500,4500,4500,4500,4500,4500,4500,4500,4500,4500,4500,4500,4500],
-					dataListTwo:[3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500],
-					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
-				}
+				showAll:false,
+				year:2017,
+				loading:true
 			}
 		},
 		mounted() {
-			this.initModelOneEchartsTwo('somodelOneEchartsTwo')
+			this.getData(2017);
 		},
 		methods:{
-			modelOneChange(e){
-				this.modelOneIndex = e;
-			},
-			modelTwoChange(e){
-				this.modelTwoIndex = e;
-			},
-			modelForeChange(e){
-				this.modelForeIndex = e;
-			},
-			modelFiveChange(e){
-				this.modelFiveIndex = e;
-			},
-			initModelOneEchartsTwo(dom,data){
-				var rich = {
-					numTwo:{
-						fontSize: 20,
-						color:'#0487ff'
-					},
-					numThree:{
-						fontSize: 14,
-						color:'#333'
-					},
-				};
-				var echartData = [{value:2200,name:'养老保险',selected:true},{value:2320,name:'医疗保险'},{value:2010,name:'失业保险'},{value:2340,name:'工伤保险'},{value:2900,name:'生育保险'}];
-				var color = ['#6aadff','#ffec6a','#ffc56a','#32d89f','#5ed8f7'];
-				let myChart = this.$echarts.init(document.getElementById(dom));
-				myChart.setOption({
-					tooltip : {
-						trigger: 'item',
-						formatter: "{a} <br/>{b} : {c} 万人({d}%)"
-					},
-					legend:{show:false},
-					color:color,
-					series :[
-						{
-							name:'学历占比',
-							type: 'pie',
-							selectedMode: 'single',
-							radius : '55%',
-							center: ['50%', '50%'],
-							data:echartData,
-							itemStyle: {
-								emphasis: {
-									shadowBlur: 10,
-									shadowOffsetX: 0,
-									shadowColor: 'rgba(0, 0, 0, 0.5)'
-								}
-							},
-							label:{
-								normal:{
-									rich: rich,
-									formatter:function(params, ticket, callback){
-										var total = 0;
-										var percent = 0;
-										echartData.forEach(function(value, index, array,name) {
-											total += value.value;
-										});
-										percent = ((params.value / total) * 100).toFixed(1);
-										return '{numThree|' + params.name + '}\n{numTwo|' + percent + '%}';
-									}
-								}
-							}
-						}
-					]
-				})
+			async getData(params){
+				this.showAll = false;
+				this.loading = true;
+				this.modelOneIndex = 0;
+				this.modelTwoIndex = 0;
+				this.modelForeIndex = 0;
+				this.modelFiveIndex = 0;
+				this.year = params;
+				try {
+					let res = await socialSecurityApi(params)
+					console.log(res)
+					this.$store.commit('savesocialSecurityData',res.data)
+				} catch (err) {
+					console.log(err)
+				} 
+				var allList = this.$store.state.socialSecurityData;
+				//缺模块一
+				this.modelOneDataOne[0].dataListOne = [allList.shbzOne.levyList[0].endowmentIns,allList.shbzOne.levyList[0].medicalIns,allList.shbzOne.levyList[0].unemployIns,allList.shbzOne.levyList[0].employInjury,allList.shbzOne.levyList[0].maternityIns]
+				this.modelOneDataOne[1].dataListOne = [allList.shbzOne.levyList[1].endowmentIns,allList.shbzOne.levyList[1].medicalIns,allList.shbzOne.levyList[1].unemployIns,allList.shbzOne.levyList[1].employInjury,allList.shbzOne.levyList[1].maternityIns]
+				this.modelOneDataTwo[0].dataList = [
+					{value:Number(allList.shbzOne.levyList[0].endowmentIns),name:'养老保险',selected:true},
+					{value:Number(allList.shbzOne.levyList[0].medicalIns),name:'医疗保险'},
+					{value:Number(allList.shbzOne.levyList[0].unemployIns),name:'失业保险'},
+					{value:Number(allList.shbzOne.levyList[0].employInjury),name:'工伤保险'},
+					{value:Number(allList.shbzOne.levyList[0].maternityIns),name:'生育保险'}
+				]
+				this.modelOneDataTwo[1].dataList = [
+					{value:Number(allList.shbzOne.levyList[1].endowmentIns),name:'养老保险',selected:true},
+					{value:Number(allList.shbzOne.levyList[1].medicalIns),name:'医疗保险'},
+					{value:Number(allList.shbzOne.levyList[1].unemployIns),name:'失业保险'},
+					{value:Number(allList.shbzOne.levyList[1].employInjury),name:'工伤保险'},
+					{value:Number(allList.shbzOne.levyList[1].maternityIns),name:'生育保险'}
+				]
+				
+				//缺模块二
+				for(var i in this.modelTwoDataOne){this.modelTwoDataOne[i].nameList=[];this.modelTwoDataOne[i].dataListOne=[];this.modelTwoDataOne[i].dataListTwo=[]}
+				for(var i in this.modelTwoDataTwo){this.modelTwoDataTwo[i].nameList=[];this.modelTwoDataTwo[i].dataListOne=[];}
+				var ylbx = allList.shbzTwo.tendencyList.filter(item=>item.typeName=='养老保险');
+				for(var i in ylbx){
+					this.modelTwoDataOne[0].nameList.push(ylbx[i].year)
+					this.modelTwoDataTwo[0].nameList.push(ylbx[i].year)
+					this.modelTwoDataOne[0].dataListOne.push(ylbx[i].income)
+					this.modelTwoDataOne[0].dataListTwo.push(ylbx[i].expenditure)
+					this.modelTwoDataTwo[0].dataListOne.push(ylbx[i].surplus)
+				}
+				var yilbx = allList.shbzTwo.tendencyList.filter(item=>item.typeName=='医疗保险');
+				for(var i in yilbx){
+					this.modelTwoDataOne[1].nameList.push(yilbx[i].year)
+					this.modelTwoDataTwo[1].nameList.push(yilbx[i].year)
+					this.modelTwoDataOne[1].dataListOne.push(yilbx[i].income)
+					this.modelTwoDataOne[1].dataListTwo.push(yilbx[i].expenditure)
+					this.modelTwoDataTwo[1].dataListOne.push(yilbx[i].surplus)
+				}
+				var sybx = allList.shbzTwo.tendencyList.filter(item=>item.typeName=='失业保险');
+				for(var i in sybx){
+					this.modelTwoDataOne[2].nameList.push(sybx[i].year)
+					this.modelTwoDataTwo[2].nameList.push(sybx[i].year)
+					this.modelTwoDataOne[2].dataListOne.push(sybx[i].income)
+					this.modelTwoDataOne[2].dataListTwo.push(sybx[i].expenditure)
+					this.modelTwoDataTwo[2].dataListOne.push(sybx [i].surplus)
+				}
+				var gsbx = allList.shbzTwo.tendencyList.filter(item=>item.typeName=='工伤保险');
+				for(var i in gsbx){
+					this.modelTwoDataOne[3].nameList.push(gsbx[i].year)
+					this.modelTwoDataTwo[3].nameList.push(gsbx[i].year)
+					this.modelTwoDataOne[3].dataListOne.push(gsbx[i].income)
+					this.modelTwoDataOne[3].dataListTwo.push(gsbx[i].expenditure)
+					this.modelTwoDataTwo[3].dataListOne.push(gsbx[i].surplus)
+				}
+				var shybx = allList.shbzTwo.tendencyList.filter(item=>item.typeName=='生育保险');
+				for(var i in shybx){
+					this.modelTwoDataOne[4].nameList.push(shybx[i].year)
+					this.modelTwoDataTwo[4].nameList.push(shybx[i].year)
+					this.modelTwoDataOne[4].dataListOne.push(shybx[i].income)
+					this.modelTwoDataOne[4].dataListTwo.push(shybx[i].expenditure)
+					this.modelTwoDataTwo[4].dataListOne.push(shybx[i].surplus)
+				}
+				
+				//缺模块三
+				var bxList = allList.shbzThree.cbrsList.filter(item=>item.year == this.year)[0]
+				this.modelThreeDataOne.dataListOne = [bxList.endowmentIns,bxList.medicalIns,bxList.unemployIns,bxList.employInjury,bxList.maternityIns];
+				this.modelThreeDataTwo.dataListOne = [bxList.endRate,bxList.medRate,bxList.uneRate,bxList.empRate,bxList.matRate];
+				
+				
+				//模块四缺少字段
+				for(var i in this.modelForeDataOne){this.modelForeDataOne.nameList=[];this.modelForeDataOne.dataListOne=[];this.modelForeDataOne.dataListTwo=[];}
+				for(var i in this.modelForeDataTwo){this.modelForeDataTwo.nameList=[];this.modelForeDataTwo.dataListOne=[];}
+				for(var j=0;j<this.modelForeDataOne.length;j++){
+					for(var i=0;i<allList.shbzFour.numberList.length;i++){
+						this.modelForeDataOne[j].nameList.push(allList.shbzFour.numberList[i].year)
+					}
+				}
+				for(var j=0;j<this.modelForeDataTwo.length;j++){
+					for(var i=0;i<allList.shbzFour.numberList.length;i++){
+						this.modelForeDataTwo[j].nameList.push(allList.shbzFour.numberList[i].year)
+					}
+				}
+				for(var i=0;i<allList.shbzFour.numberList.length;i++){
+					this.modelForeDataOne[0].dataListOne.push(allList.shbzFour.numberList[i].endowmentIns)
+					this.modelForeDataOne[1].dataListOne.push(allList.shbzFour.numberList[i].medicalIns)
+					this.modelForeDataOne[2].dataListOne.push(allList.shbzFour.numberList[i].unemployIns)
+					this.modelForeDataOne[3].dataListOne.push(allList.shbzFour.numberList[i].employInjury)
+					this.modelForeDataOne[4].dataListOne.push(allList.shbzFour.numberList[i].maternityIns)
+					this.modelForeDataOne[0].dataListTwo.push(allList.shbzFour.numberList[i].endRate)
+					this.modelForeDataOne[1].dataListTwo.push(allList.shbzFour.numberList[i].medRate)
+					this.modelForeDataOne[2].dataListTwo.push(allList.shbzFour.numberList[i].uneRate)
+					this.modelForeDataOne[3].dataListTwo.push(allList.shbzFour.numberList[i].empRate)
+					this.modelForeDataOne[4].dataListTwo.push(allList.shbzFour.numberList[i].matRate)
+				}
+				for(var i=0;i<allList.shbzFour.ffysList.length;i++){
+					this.modelForeDataTwo[0].dataListOne.push(allList.shbzFour.ffysList[i].endowmentIns)
+					this.modelForeDataTwo[1].dataListOne.push(allList.shbzFour.ffysList[i].medicalIns)
+					this.modelForeDataTwo[2].dataListOne.push(allList.shbzFour.ffysList[i].unemployIns)
+					this.modelForeDataTwo[3].dataListOne.push(allList.shbzFour.ffysList[i].employInjury)
+					this.modelForeDataTwo[4].dataListOne.push(allList.shbzFour.ffysList[i].maternityIns)
+				}
+				//模块五
+				for(var i in this.modelFiveData){this.modelFiveData.nameList=[];this.modelFiveData.dataListOne=[];this.modelFiveData.dataListTwo=[];}
+				for(var i=0;i<this.modelFiveData.length;i++){
+					for(var j=0;j<allList.shbzFive.cityanalysisList.length;j++){
+						this.modelFiveData[i].nameList.push(allList.shbzFive.cityanalysisList[j].city)
+					}
+				}
+				for(var i in allList.shbzFive.cityanalysisList){
+					this.modelFiveData[0].dataListOne.push(allList.shbzFive.cityanalysisList[i].yanglaosr)
+					this.modelFiveData[0].dataListTwo.push(allList.shbzFive.cityanalysisList[i].yanglaozc)
+					this.modelFiveData[1].dataListOne.push(allList.shbzFive.cityanalysisList[i].yiliaosr)
+					this.modelFiveData[1].dataListTwo.push(allList.shbzFive.cityanalysisList[i].yiliaozc)
+					this.modelFiveData[2].dataListOne.push(allList.shbzFive.cityanalysisList[i].shiyesr)
+					this.modelFiveData[2].dataListTwo.push(allList.shbzFive.cityanalysisList[i].shiyezc)
+					this.modelFiveData[3].dataListOne.push(allList.shbzFive.cityanalysisList[i].gongshangsr)
+					this.modelFiveData[3].dataListTwo.push(allList.shbzFive.cityanalysisList[i].gongshangzc)
+					this.modelFiveData[4].dataListOne.push(allList.shbzFive.cityanalysisList[i].shengyusr)
+					this.modelFiveData[4].dataListTwo.push(allList.shbzFive.cityanalysisList[i].shengyuzc)
+				}
+				
+				//模块六
+				this.modelSixDataOne.nameList=[];this.modelSixDataOne.dataListOne=[];this.modelSixDataOne.dataListTwo=[];
+				this.modelSixDataTwo.nameList=[];this.modelSixDataTwo.dataListOne=[];this.modelSixDataTwo.dataListTwo=[];
+				for(var i in allList.shbzSix.houseFundList){
+					this.modelSixDataOne.nameList.push(allList.shbzSix.houseFundList[i].year);
+					this.modelSixDataTwo.nameList.push(allList.shbzSix.houseFundList[i].year);
+					this.modelSixDataOne.dataListOne.push(allList.shbzSix.houseFundList[i].cjje);
+					this.modelSixDataOne.dataListTwo.push(allList.shbzSix.houseFundList[i].workerNum);
+					this.modelSixDataTwo.dataListOne.push(allList.shbzSix.houseFundList[i].dkze);
+					this.modelSixDataTwo.dataListTwo.push(allList.shbzSix.houseFundList[i].dkye);
+				}
+				
+				
+				
+				this.loading = false;
+				this.showAll = true;
 			},
 			
+			modelOneChange(e){
+				this.modelOneIndex = e-1;
+				console.log(e);
+				this.showModelOne = false;
+				this.$nextTick(()=>{
+					this.showModelOne = true;
+				})
+			},
+			modelTwoChange(e){
+				this.modelTwoIndex = e-1;
+				console.log(e);
+				this.showModelTwo = false;
+				this.$nextTick(()=>{
+					this.showModelTwo = true;
+				})
+			},
+			modelForeChange(e){
+				this.modelForeIndex = e-1;
+				console.log(e);
+				this.showModelFore = false;
+				this.$nextTick(()=>{
+					this.showModelFore = true;
+				})
+			},
+			modelFiveChange(e){
+				this.modelFiveIndex = e-1;
+				console.log(e);
+				this.showModelFive = false;
+				this.$nextTick(()=>{
+					this.showModelFive = true;
+				})
+			},
 		}
 	}
 </script>
@@ -282,45 +568,29 @@
 	.modelDetailsBox{
 		width: 100%;
 		height: auto;
-		display: flex;
-		flex-wrap: wrap;
 		.modelOneBox{
-			width: 746px;
 			height: 332px;
 			background: #fff;
-			margin-bottom: 24px;
 		}
 		.modelTwoBox{
-			width: 862px;
 			height: 332px;
-			margin-left: 32px;
 			background: #fff;
-			margin-bottom: 24px;
 		}
 		.modelThreeBox{
-			width: 746px;
 			height: 332px;
 			background: #fff;
-			margin-bottom: 24px;
 		}
 		.modelForeBox{
-			width: 862px;
 			height: 332px;
-			margin-left: 32px;
 			background: #fff;
-			margin-bottom: 24px;
 		}
 		.modelFiveBox{
-			width: 1632px;
 			height: 352px;
 			background: #fff;
-			margin-bottom: 24px;
 		}
 		.modelSixBox{
-			width: 1632px;
 			height: 352px;
 			background: #fff;
-			margin-bottom: 24px;
 		}
 	}
 </style>

@@ -11,7 +11,60 @@
 		},
 		props:['id','datas','type'],
 		mounted() {
-			var series = [];
+			var series = []; 
+			if(this.datas.type==3){
+				series = [{
+						name:this.datas.legendList[0],
+						type:'bar',
+						barWidth: 14,
+						itemStyle: {
+							color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+									offset: 0,
+									color: this.datas.color[0]
+								},
+								{
+									offset: 1,
+									color: this.datas.color[1]
+								}
+							])
+						},
+						data:this.datas.dataListOne
+					},
+					{
+						name:this.datas.legendList[1],
+						type:'bar',
+						barWidth: 14,
+						itemStyle: {
+							color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+									offset: 0,
+									color: this.datas.color[2]
+								},
+								{
+									offset: 1,
+									color:this.datas.color[3]
+								}
+							])
+						},
+						data:this.datas.dataListTwo
+					},
+					{
+						name:this.datas.legendList[2],
+						type:'bar',
+						barWidth: 14,
+						itemStyle: {
+							color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+									offset: 0,
+									color: this.datas.color[4]
+								},
+								{
+									offset: 1,
+									color:this.datas.color[5]
+								}
+							])
+						},
+						data:this.datas.dataListThree
+					}]
+			}else
 			if(this.datas.type==2){
 				series = [{
 						name:this.datas.legendList[0],
@@ -120,6 +173,21 @@
 					},
 					axisTick:{
 						show:false
+					},
+					axisLabel:{
+						fontSize:10,
+						formatter:function(val){
+							var strs = val.split('');
+							var str = '';
+							for(var i=0;i<strs.length;i++){
+								if(i%3==0&&i!=0){
+									str+=strs[i]+'\n';
+								}else{
+									str+=strs[i];
+								}
+							}
+							return str
+						}
 					}
 				},
 				yAxis:{

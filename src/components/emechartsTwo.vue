@@ -11,9 +11,9 @@
 		},
 		props:['id','datas'],
 		mounted() {
-			var datas = this.datas;
+			var echartDataOne = this.datas.dataListOne;
+			var echartDataTwo = this.datas.dataListTwo;
 			var color = ['#6aadff','#ffec6a','#ffc56a','#32d89f','#5ed8f7'];
-			let myChart = this.$echarts.init(document.getElementById(this.id));
 			var rich = {
 				numOne:{
 					fontSize: 16,
@@ -29,56 +29,57 @@
 					color:'#333'
 				},
 			};
-			var totals = 0;
-			for(var i in datas.data){
-				totals += datas.data[i].value
-			}
+			let myChart = this.$echarts.init(document.getElementById(this.id));
 			myChart.setOption({
 				tooltip: {
 					trigger: 'item',
-					formatter: "{a} <br/>{b}: {c} "+datas.unit+"({d}%)"
-				},
-				title:{
-					text:totals,
-					subtext:datas.title,
-					textStyle: {
-						fontSize: 24,
-						color:'#0487ff',
-						fontStyle:'italic'
-					},
-					subtextStyle: {
-						color: '#666',
-						fontSize: 14,
-						align: 'center'
-					},
-					x: 'center',
-					y: '40%',
+					formatter: "{a} <br/>{b}: {c} 万人({d}%)"
 				},
 				legend:{show:false},
 				color:color,
 				series :[
 					{
-						name:this.datas.names,
-						type:'pie',
-						radius: ['40%', '53%'],
+						name:'产业分布',
+						type: 'pie',
 						selectedMode: 'single',
+						radius: [0, '36%'],
+						center: ['50%', '50%'],
+						data:echartDataOne,
+						itemStyle: {
+							emphasis: {
+								shadowBlur: 10,
+								shadowOffsetX: 0,
+								shadowColor: 'rgba(0, 0, 0, 0.5)'
+							}
+						},
+						label:{
+							normal: {
+								position: 'inner'
+							}
+						}
+					},
+					{
+						name:'行业分布',
+						type:'pie',
+						radius: ['48%', '63%'],
 						label:{
 							normal:{
 								rich: rich,
 								formatter:function(params, ticket, callback){
 									var total = 0;
 									var percent = 0;
-									datas.data.forEach(function(value, index, array,name) {
+									echartDataTwo.forEach(function(value, index, array,name) {
 										total += value.value;
 									});
 									percent = ((params.value / total) * 100).toFixed(1);
-									return '{numThree|' + params.name + '}\n{numOne|' + params.value + '}{numThree| '+ datas.unit +'}\n{numTwo|' + percent + '%}';
+									return '{numThree|' + params.name + '}{numOne|' + params.value + '}{numThree| 万人}\n{numTwo|' + percent + '%}';
 								}
 							}
 						},
-						data:datas.data
+						data:echartDataTwo
 					}
 				]
+				
 			})
 		}
 	}

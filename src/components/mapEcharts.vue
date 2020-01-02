@@ -12,7 +12,6 @@
 		},
 		props:['id','datas'],
 		mounted() {
-			console.log(uploadedDataURL);
 			var rich = {
 				numOne:{
 					fontSize: 18,
@@ -125,7 +124,6 @@
 								decoration: 'none',
 							},
 							formatter: function (params, ticket, callback) {
-								console.log(params)
 								var tipHtml = '';
 								var dataList = params.data.dataList;
 								var str = '';
@@ -180,7 +178,6 @@
 				    count++;
 				}, 1500);
 				myChart.on('mouseover', function(params) {
-				    console.log(params)
 				    clearInterval(timeTicket);
 				    myChart.dispatchAction({
 				        type: 'downplay',

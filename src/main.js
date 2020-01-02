@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store/index.js'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import 'jquery'
@@ -11,9 +12,7 @@ import './assets/css/base.less'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'lib-flexible/flexible'
-import initEcharts from './util/initEcharts'
 
-Vue.prototype.$initEcharts = initEcharts
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 Vue.use(VueAxios,axios)
@@ -23,6 +22,7 @@ Vue.prototype.$axios=axios;
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

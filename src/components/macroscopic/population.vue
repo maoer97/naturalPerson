@@ -1,32 +1,26 @@
 <template>
 	<div class="mainbox">
-		<div class="titleBox">湖北省<span>2019年</span>人口基本情况
+		<div class="titleBox">湖北省<span>{{year}}年</span>人口基本情况
 			<div class="buttons"><a href="">下载</a></div>
 		</div>
-		
-		<div class="modelDetailsBox">
+		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
+		<div class="modelDetailsBox"  v-if="showAll">
 			<el-row>
 				<el-col :span='24'>
 					<div class="modelOneBox">
 						<div class="modelboxs">
-							<div class="levelTwoTitle"><span></span>全省人口情况
-								<div class="buttonsBox">
-									<div @click="modelOneChange(1)" :class="modelOneIndex==1?'choosen':''">总人口数</div>
-									<div @click="modelOneChange(2)" :class="modelOneIndex==2?'choosen':''">出生情况</div>
-									<div @click="modelOneChange(3)" :class="modelOneIndex==3?'choosen':''">死亡情况</div>
-								</div>
-							</div>
+							<subheading :items='modelOneList' :titles='"全省人口情况"' @changeIndex='modelOneChange'></subheading>
 							<div style="width: 100%;height: calc(100% - 56px);">
 								<div class="modelEchartsBox">
-									<init-echartssix :id='"modelEchartsBox"' :datas='modelOneDataOne'></init-echartssix>
+									<init-echartssix :id='"modelEchartsBox"' :datas='modelOneDataOne[modelOneIndex]' v-if="showModelOne"></init-echartssix>
 								</div>
 								<div class="dataDetailBox">
 									<p style="color: #666666;">全省总人口</p>
-									<p style="color: #487fff;">(2018年)</p>
-									<div><span>5917 </span> 万人</div>
+									<p style="color: #487fff;">({{modelOneDataOneD.year}}年)</p>
+									<div><span>{{modelOneDataOneD.sum}} </span> 万人</div>
 									<p style="color: #666666;margin-top: 34px;">人口自然增长率</p>
-									<p style="color: #487fff;">(2018年)</p>
-									<div><span>4.5 </span> %</div>
+									<p style="color: #487fff;">({{modelOneDataOneD.year}}年)</p>
+									<div><span>{{modelOneDataOneD.ratio}} </span> %</div>
 								</div>
 							</div>
 						</div>
@@ -71,22 +65,19 @@
 				<el-col :span='24'>
 					<div class="modelForeBox">
 						<div class="modelboxs">
-							<div class="levelTwoTitle"><span></span>各年龄层人口结构
-								<div class="buttonsBox">
-									<div @click="modelForeChange(1)" :class="modelForeIndex==1?'choosen':''">整体性别比</div>
-									<div @click="modelForeChange(2)" :class="modelForeIndex==2?'choosen':''">出生性别比</div>
-								</div>
-							</div>
+							<subheading :items='modelForeList' :titles='"各年龄层人口结构"' @changeIndex='modelForeChange'></subheading>
 							<div style="width: 100%;height: calc(100% - 56px);">
 								<div style="width: 100%;height: calc(100% - 56px);">
-									<div id="modelForeEchartsOne"></div>
+									<div class="modelForeEchartsOne">
+										<popuecharts-one :id='"modelForeEchartsOne"' :datas='modelForeDataOne.dataList[modelForeIndex]'  v-if="showModelFore"></popuecharts-one>
+									</div>
 									<div class="datadetailbox">
 										<p>老年人口占比</p>
-										<p><span>14.5</span>%</p>
+										<p><span>{{modelForeDataOne.lnrkzb}}</span>%</p>
 										<p style="padding-top: 10px;">整体性别比</p>
-										<p><span>114</span></p>
+										<p><span>{{modelForeDataOne.ztxbb}}</span></p>
 										<p style="padding-top: 10px;">出生性别比</p>
-										<p><span>114</span></p>
+										<p><span>{{modelForeDataOne.csxbb}}</span></p>
 									</div>
 								</div>
 							</div>
@@ -110,10 +101,10 @@
 				<el-col :span='24'>
 					<div class="modelSixBox">
 						<div class="modelboxs">
-							<div class="levelTwoTitle"><span></span>人口密度分布</div>
+							<div class="levelTwoTitle"><span></span>婚姻情况及趋势分析</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="modelSixEchartsOne" id="modelSixEchartsOne">
-									
+								<div class="modelSixEchartsOne">
+									<popuecharts-two :id='"modelSixEchartsOne"' :datas='modelSixDataOne'></popuecharts-two>
 								</div>
 								<div class="modelSixEchartsTwo">
 									<init-echartsfive :id='"modelSixEchartsTwo"' :datas = 'modelSixDataTwo'></init-echartsfive>
@@ -125,6 +116,7 @@
 			</el-row>
 			
 		</div>
+		
 	</div>
 </template>
 
@@ -133,891 +125,260 @@
 	import initEchartssix from '../initEchartssix.vue'
 	import initEchartsfore from '../initEchartsfore.vue'
 	import initEchartsfive from '../initEchartsfive.vue'
+	import popuechartsOne from '../popuechartsOne.vue'
+	import popuechartsTwo from '../popuechartsTwo.vue'
 	import mapEcharts from '../mapEcharts.vue'
+	import subheading from '../subheading.vue'
+	import {populationApi} from '../../util/api.js'
 	export default{
-		components:{initEchartsone,initEchartssix,initEchartsfore,initEchartsfive,mapEcharts},
+		components:{popuechartsOne,popuechartsTwo,initEchartsone,initEchartssix,initEchartsfore,initEchartsfive,mapEcharts,subheading},
+		// props:['year'],
 		data(){
 			return{
-				modelOneIndex:1,
-				modelForeIndex:1,
-				modelOneDataOne:{
+				showAll:false,
+				loading:true,
+				modelOneList:[
+					{label: '总人口数', value: 1},
+					{label: '出生情况', value: 2},
+					{label: '死亡情况', value: 3}
+				],
+				modelForeList:[
+					{label: '整体性别比', value: 1},
+					{label: '出生性别比', value: 2}
+				],
+				modelOneDataOneD:{
+					sum:0,
+					ratio:0,
+					year:0
+				},
+				modelOneDataOne:[{
 					unit:['单位(万人)','增长率'],
 					legendList:['全省总人口','人口自然增长率'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[3000,3200,3500,3800,4200],
-					dataListTwo:[11,13,14,11,16],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc56a']
-				},
+				},{
+					unit:['单位(万人)','增长率'],
+					legendList:['全省出生人口','出生人口自然增长率'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc56a']
+				},{
+					unit:['单位(万人)','增长率'],
+					legendList:['全省死亡总人口','死亡人口自然增长率'],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					color:['#487fff','#84a9ff','#ffc56a']
+				}],
+				showModelOne:true,
+				modelOneIndex:0,
 				modelTwoDataOne:{
 					unit:'生育率(%)',
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[1.1, 0.6, 1.8, 1.6, 1.2]
+					nameList:[],
+					dataListOne:[]
 				},
 				modelTwoDataTwo:{
 					type:2,
 					unit:['单位(万人)'],
 					legendList:['出生人口','二胎人口'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[1500, 1400, 1300, 1400, 1600],
-					dataListTwo:[1800, 1600, 1600, 1200, 1500],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},
 				modelThreeDataOne:{
 					unit:'单位(万人)',
 					legendList:['常住人口','户籍人口'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[1500,1500,1500,1500,1500],
-					dataListTwo:[500,500,500,500,500],
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc56a','#ffd99e']
 				},
 				modelThreeDataTwo:{
 					unit:['单位(万人)','城镇化率(%)'],
 					legendList:['城镇人口','城镇化率'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[3700, 3600, 3200, 3700, 3500],
-					dataListTwo:[27, 35, 32, 29, 39]
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[]
 				},
+				modelForeDataOne:{
+					lnrkzb:0,
+					ztxbb:0,
+					csxbb:0,
+					dataList:[
+						{
+							labelData:[],
+							dataListOne:[],
+							dataListTwo:[],
+						},
+						{
+							labelData:[],
+							dataListOne:[],
+							dataListTwo:[],
+						}
+					]
+					
+				},
+				showModelFore:true,
+				modelForeIndex:0,
 				modelFiveDataOne:{
 					type:1,
-					size:[0,1000],
+					size:[0,1100],
 					title:'',
-					data : [
-						{
-							name:'武汉市',
-							value:988,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'恩施土家族苗族自治州',
-							value:188,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'十堰市',
-							value:688,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'宜昌市',
-							value:888,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'襄阳市',
-							value:888,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'黄冈市',
-							value:288,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'荆州市',
-							value:388,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'荆门市',
-							value:288,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'咸宁市',
-							value:388,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'随州市',
-							value:388,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'孝感市',
-							value:488,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'黄石市',
-							value:388,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'神农架林区',
-							value:88,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'天门市',
-							value:288,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'仙桃市',
-							value:388,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'潜江市',
-							value:488,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-						{
-							name:'鄂州市',
-							value:588,
-							dataList:[
-								{
-									name:'常驻人口',
-									value:'105',
-									unit:'万人'
-								},
-								{
-									name:'户籍人口',
-									value:'150',
-									unit:'万人'
-								},
-								{
-									name:'城镇人口',
-									value:'50',
-									unit:'万人'
-								},
-								{
-									name:'乡村人口',
-									value:'45',
-									unit:'万人'
-								},
-							]
-						},
-					]
+					data : []
 				},
 				modelSixDataOne:{
 					type:2,
 					unit:['单位(万人)','男女比'],
 					legendList:['适婚男性','适婚女性','适婚男女比例'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[1500, 1400, 1300, 1400, 1600],
-					dataListTwo:[1800, 1600, 1600, 1200, 1500],
-					dataListThree:[1.3,1.2,1.4,0.8,0.9]
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[],
+					dataListThree:[]
 				},
 				modelSixDataTwo:{
-					unit:['单位(万人)','增长率(%)'],
+					unit:['单位(个)','增长率(%)'],
 					legendList:['结婚家庭数','增长率'],
-					nameList:['2014','2015','2016','2017','2018'],
-					dataListOne:[3700, 1600, 3200, 1700, 3500],
-					dataListTwo:[27, 35, 32, 9, 39]
+					nameList:[],
+					dataListOne:[],
+					dataListTwo:[]
 				},
+				allData:'',
+				year:2017,
+				fullscreenLoading:true
 			}
 		},
 		mounted() {
-			this.initModelTwoEchartsTwo('modelSixEchartsOne',this.modelSixDataOne)
-			this.initModelForeEchartsOne('modelForeEchartsOne')
+			// this.openFullScreen2(true)
+			this.getData(2017);
+			// this.modelForeChange(1);
 		},
 		methods:{
 			modelOneChange(e){
-				this.modelOneIndex = e;
+				this.modelOneIndex = e-1;
+				console.log(e);
+				this.showModelOne = false;
+				this.$nextTick(()=>{
+					this.showModelOne = true;
+				})
 			},
 			modelForeChange(e){
-				this.modelForeIndex = e;
+				this.modelForeIndex = e-1;
+				console.log(e);
+				this.showModelFore = false;
+				this.$nextTick(()=>{
+					this.showModelFore = true;
+				})
 			},
-			
-			initModelTwoEchartsTwo(dom,data){
-				var series = [];
-				var yAxis = [];
-				if(data.type==1){
-					series = [
-						{
-							name:data.legendList[0],
-							type:'bar',
-							barWidth: 20,
-							stack: '1',
-							itemStyle: {
-								color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-										offset: 0,
-										color: "#487fff"
-									},
-									{
-										offset: 1,
-										color: "#84a9ff"
-									}
-								])
-							},
-							data:data.dataListOne
-						},
-						{
-							name:data.legendList[1],
-							type:'bar',
-							barWidth: 20,
-							stack: '1',
-							itemStyle: {
-								color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-										offset: 0,
-										color: "#80ebf5"
-									},
-									{
-										offset: 1,
-										color: "#3dc5dd "
-									}
-								])
-							},
-							data:data.dataListTwo
-						}
-					]
-					yAxis = [{
-						type: 'value',
-						name: data.unit[0],
-						axisLine:{
-								  show:false,
-						    lineStyle:{
-						        color:"#666"
-						    }
-						},
-						splitLine:{
-						  show:true,
-						  lineStyle:{
-						      color:"#eeeeee"
-						  }
-						},
-						axisTick:{
-						  show:false
-						}
-					}]
-				}else if(data.type==2){
-					series = [
-						{
-							name:data.legendList[0],
-							type:'bar',
-							barWidth: 20,
-							stack: '1',
-							itemStyle: {
-								color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-										offset: 0,
-										color: "#487fff"
-									},
-									{
-										offset: 1,
-										color: "#84a9ff"
-									}
-								])
-							},
-							data:data.dataListOne
-						},
-						{
-							name:data.legendList[1],
-							type:'bar',
-							barWidth: 20,
-							stack: '1',
-							itemStyle: {
-								color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-										offset: 0,
-										color: "#80ebf5"
-									},
-									{
-										offset: 1,
-										color: "#3dc5dd "
-									}
-								])
-							},
-							data:data.dataListTwo
-						},
-						{
-							name:data.legendList[2],
-							type:'line',
-							yAxisIndex: 1,
-							itemStyle:{
-								normal:{
-									color:'#4eddac',
-									lineStyle:{
-										color:'#4eddac',
-										width:2
-									}
-								}
-							},
-							data:data.dataListThree
-						}
-					]
-					yAxis = [{
-						type: 'value',
-						name: data.unit[0],
-						axisLine:{
-								  show:false,
-						    lineStyle:{
-						        color:"#666"
-						    }
-						},
-						splitLine:{
-						  show:true,
-						  lineStyle:{
-						      color:"#eeeeee"
-						  }
-						},
-						axisTick:{
-						  show:false
-						}
-					},{
-						type: 'value',
-						show:true,
-						name :data.unit[1],
-						axisLine:{
-							show:false,
-							lineStyle:{
-								color:"#666"
-							}
-						},
-						splitLine:{
-							show:false
-						},
-						axisTick:{
-							show:false
-						}
-					}]
+			async getData(params){
+				this.showAll = false;
+				this.loading = true;
+				this.modelOneIndex = 0;
+				this.modelForeIndex=0;
+				this.year = params;
+				try {
+					let res = await populationApi(params)
+					console.log(res)
+					this.$store.commit('savepopulationData',res.data)
+				} catch (err) {
+					console.log(err)
+				} 
+				
+				var allList = this.$store.state.populationData;
+				this.modelOneDataOne[0].nameList=[],this.modelOneDataOne[0].dataListOne=[],this.modelOneDataOne[0].dataListTwo=[];
+				this.modelOneDataOne[1].nameList=[],this.modelOneDataOne[1].dataListOne=[],this.modelOneDataOne[1].dataListTwo=[];
+				this.modelOneDataOne[2].nameList=[],this.modelOneDataOne[2].dataListOne=[],this.modelOneDataOne[2].dataListTwo=[];
+				for(var i in allList.rkqkOne.zrkList){
+					this.modelOneDataOne[0].nameList.push(allList.rkqkOne.zrkList[i].year)
+					this.modelOneDataOne[0].dataListOne.push(allList.rkqkOne.zrkList[i].zrkNum)
+					this.modelOneDataOne[0].dataListTwo.push(allList.rkqkOne.zrkList[i].growthRatio)
 				}
-				let myChart = this.$echarts.init(document.getElementById(dom));
-				myChart.setOption({
-					grid: {
-						left: '5%',
-						right: '5%',
-						bottom: '8%',
-						top: '16%',
-						containLabel: true
-					},
-					legend: {
-					    show: true,
-						top:'20',
-						itemGap:20,
-					    textStyle: {
-					      color: "#666"
-					    },
-					},
-					tooltip: {
-						trigger: 'axis'
-					},
-					xAxis: {
-						type: 'category',
-						data: data.nameList,
-						axisPointer: {
-							type: 'shadow'
-						},
-						axisLine:{
-							show:false,
-							lineStyle:{
-								color:"#666"
-							}
-						},
-						axisTick:{
-							show:false
-						}
-					},
-					yAxis:yAxis,
-					series:series
-				})
+				for(var i in allList.rkqkOne.zrkListLeft){
+					this.modelOneDataOneD.sum = allList.rkqkOne.zrkListLeft[0].zrkNum
+					this.modelOneDataOneD.ratio = allList.rkqkOne.zrkListLeft[0].growthRatio
+					this.modelOneDataOneD.year = allList.rkqkOne.zrkListLeft[0].year
+				}
+				for(var i in allList.rkqkOne.csrkList){
+					this.modelOneDataOne[1].nameList.push(allList.rkqkOne.csrkList[i].year)
+					this.modelOneDataOne[1].dataListOne.push(allList.rkqkOne.csrkList[i].birthNum)
+					this.modelOneDataOne[1].dataListTwo.push(allList.rkqkOne.csrkList[i].birthRate)
+				}
+				for(var i in allList.rkqkOne.swrkList){
+					this.modelOneDataOne[2].nameList.push(allList.rkqkOne.swrkList[i].year)
+					this.modelOneDataOne[2].dataListOne.push(allList.rkqkOne.swrkList[i].deathNum)
+					this.modelOneDataOne[2].dataListTwo.push(allList.rkqkOne.swrkList[i].deathRate)
+				}
+				this.modelTwoDataOne.nameList=[],this.modelTwoDataOne.dataListOne=[],this.modelTwoDataTwo.nameList=[],this.modelTwoDataTwo.dataListOne=[],this.modelTwoDataTwo.dataListTwo=[];
+				for(var i in allList.rkqkTwo.syqkList){
+					this.modelTwoDataOne.nameList.push(allList.rkqkTwo.syqkList[i].year)
+					this.modelTwoDataOne.dataListOne.push(allList.rkqkTwo.syqkList[i].syRatio)
+					this.modelTwoDataTwo.nameList.push(allList.rkqkTwo.syqkList[i].year)
+					this.modelTwoDataTwo.dataListOne.push(allList.rkqkTwo.syqkList[i].birthNum)
+					this.modelTwoDataTwo.dataListTwo.push(allList.rkqkTwo.syqkList[i].secNum)
+				}
+				this.modelThreeDataOne.nameList=[],this.modelThreeDataTwo.nameList=[],this.modelThreeDataOne.dataListOne=[],this.modelThreeDataOne.dataListTwo=[],this.modelThreeDataTwo.dataListOne=[],this.modelThreeDataTwo.dataListTwo=[];
+				for(var i in allList.rkqkThree.qsrkgcList){
+					this.modelThreeDataOne.nameList.push(allList.rkqkThree.qsrkgcList[i].year)
+					this.modelThreeDataTwo.nameList.push(allList.rkqkThree.qsrkgcList[i].year)
+					this.modelThreeDataOne.dataListOne.push(allList.rkqkThree.qsrkgcList[i].czrk)
+					this.modelThreeDataOne.dataListTwo.push(allList.rkqkThree.qsrkgcList[i].hjrk)
+					this.modelThreeDataTwo.dataListOne.push(allList.rkqkThree.qsrkgcList[i].urban)
+					this.modelThreeDataTwo.dataListTwo.push(allList.rkqkThree.qsrkgcList[i].czhl)
+				}
+				this.modelForeDataOne.dataList[0].labelData=[],this.modelForeDataOne.dataList[0].dataListOne=[],this.modelForeDataOne.dataList[0].dataListTwo=[],this.modelForeDataOne.dataList[1].labelData=[],this.modelForeDataOne.dataList[1].dataListOne=[],this.modelForeDataOne.dataList[1].dataListTwo=[]
+				for(var i in allList.rkqkFour.rknljztList){
+					this.modelForeDataOne.dataList[0].labelData.push(allList.rkqkFour.rknljztList[i].ageRange+'('+allList.rkqkFour.rknljztList[i].ageName+'岁)')
+					var sum = Number(allList.rkqkFour.rknljztList[i].maleNum)+Number(allList.rkqkFour.rknljztList[i].femaleNum)
+					this.modelForeDataOne.dataList[0].dataListOne.push(0-((Number(allList.rkqkFour.rknljztList[i].maleNum)/sum)*100).toFixed(1))
+					this.modelForeDataOne.dataList[0].dataListTwo.push(((Number(allList.rkqkFour.rknljztList[i].femaleNum)/sum)*100).toFixed(1))
+				}
+				for(var i in allList.rkqkFour.csrkxbbList){
+					this.modelForeDataOne.dataList[1].labelData.push(allList.rkqkFour.csrkxbbList[i].year+'年出生  ')
+					var sum = Number(allList.rkqkFour.csrkxbbList[i].male)+Number(allList.rkqkFour.csrkxbbList[i].female)
+					this.modelForeDataOne.dataList[1].dataListOne.push(0-((Number(allList.rkqkFour.csrkxbbList[i].male)/sum)*100).toFixed(1))
+					this.modelForeDataOne.dataList[1].dataListTwo.push(((Number(allList.rkqkFour.csrkxbbList[i].female)/sum)*100).toFixed(1))
+				}
+				
+				for(var i in allList.rkqkFour.xbbList){
+					this.modelForeDataOne.lnrkzb = allList.rkqkFour.xbbList[0].agedRatio
+					this.modelForeDataOne.ztxbb = allList.rkqkFour.xbbList[0].ztxbb
+					this.modelForeDataOne.csxbb = allList.rkqkFour.xbbList[0].csxbb
+				}
+				
+				this.modelFiveDataOne.data=allList.rkqkFive.rkqkFiveVos;
+				
+				this.modelSixDataOne.nameList=[],this.modelSixDataOne.dataListOne=[],this.modelSixDataOne.dataListTwo=[],this.modelSixDataOne.dataListThree=[]
+				for(var i in allList.rkqkSix.hlnnblList){
+					this.modelSixDataOne.nameList.push(allList.rkqkSix.hlnnblList[i].year)
+					this.modelSixDataOne.dataListOne.push(allList.rkqkSix.hlnnblList[i].male)
+					this.modelSixDataOne.dataListTwo.push(allList.rkqkSix.hlnnblList[i].female)
+					this.modelSixDataOne.dataListThree.push(allList.rkqkSix.hlnnblList[i].ratio)
+				}
+				this.modelSixDataTwo.nameList=[],this.modelSixDataTwo.dataListOne=[],this.modelSixDataTwo.dataListTwo=[]
+				for(var i in allList.rkqkSix.jhjtsList){
+					this.modelSixDataTwo.nameList.push(allList.rkqkSix.jhjtsList[i].year)
+					this.modelSixDataTwo.dataListOne.push(allList.rkqkSix.jhjtsList[i].marryNum)
+					this.modelSixDataTwo.dataListTwo.push(allList.rkqkSix.jhjtsList[i].growthRate)
+				}
+				
+				// this.openFullScreen2(false)
+				this.loading = false;
+				this.showAll = true;
 			},
-			
-			initModelForeEchartsOne(dom,data){
-				var labelData = ['幼儿(0岁-3岁)','儿童(4岁-6岁)','少年(7岁-18岁)','青年(19岁-40岁)','壮年(41岁-49岁)','中年(50岁-64岁)','老年(65岁及以上)'];
-				// var labelData2 = ['109.3','109.3','109.3','109.3','109.3','109.3','109.3'];
-				let myChart = this.$echarts.init(document.getElementById(dom));
-				myChart.setOption({
-					tooltip: {
-						trigger: 'axis',
-						        axisPointer: {
-						            type: 'shadow'
-						        },
-						        formatter: function(a) {
-						            var v = a[0];
-						            return v.name + '<br/>' + v.marker + v.seriesName + '：' + Math.abs(v.value) + '%';
-						        }
-					},
-					xAxis: [{
-					        type: 'value',
-					        max: 0,
-					        gridIndex: 0,
-					        axisTick: {
-					            show: false
-					        },
-					        axisLabel: {
-					            show: true,
-					            formatter: function(v) {
-					                return (v * -1) + '%'
-					            },
-								color:'#666'
-					        },
-					        axisLine: {
-					            show: true,
-								lineStyle:{
-								    color:"#eee"
-								}
-					        },
-					        splitLine: {
-					            show: false
-					        }
-					    }, {
-					        type: 'value',
-					        gridIndex: 1,
-					        min: 0,
-					        axisTick: {
-					            show: false
-					        },
-					        axisLine: {
-					            show: true,
-								lineStyle:{
-								    color:"#eee",
-								},
-					        },
-					        axisLabel: {
-					            show: true,
-								formatter: function(v) {
-								    return v + '%'
-								},
-								color:'#666'
-					        },
-					        splitLine: {
-					            show: false
-					        }
-					    }],
-					    yAxis: [{
-					        type: 'category',
-					        gridIndex: 0,
-					        inverse: true,
-							// name:'年龄段',
-					        data: labelData,
-					        axisTick: {
-					            show: false
-					        },
-					        axisLabel: {
-					            show: true
-					        },
-					        axisLine: {
-					            show: false
-					        }
-					    }, {
-					        type: 'category',
-					        gridIndex: 1,
-							// name:'整体性别比',
-					        inverse: true,
-							position:'right',
-					        data: labelData,
-					        axisTick: {
-					            show: false
-					        },
-					        axisLabel: {
-					            show:false
-					        },
-					        axisLine: {
-					            show: false
-					        }
-					    }],
-					    grid: [{
-					        top: 30,
-					        width: '34%',
-							bottom:20,
-					        left: 115,
-					        gridIndex: 0,
-					    }, {
-					        top: 30,
-					        left: '54%',
-					        right: 65,
-							bottom:20,
-					        gridIndex: 1,
-					    }],
-					    series: [{
-					            name: '男性',
-					            type: 'bar',
-					            barWidth: 10,
-					            gridIndex: 0,
-					            itemStyle: {
-					                normal: {
-					                    show: true,
-					                    color: new this.$echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-					                        offset: 0,
-					                        color: "#0487ff" // 0% 处的颜色
-					                    }, {
-					                        offset: 1,
-					                        color: "#84a9ff" // 100% 处的颜色
-					                    }], false),
-					                    barBorderRadius: 50,
-					                    borderWidth: 0,
-					                    borderColor: '#333',
-					                    label: {
-					                        show: true,
-					                        position: 'left',
-					                        formatter: function(v) {
-					                            return (v.value * -1)+'%';
-					                        }
-					                    }
-					                }
-					            },
-					            data: [-50, -48, -42, -45, -48, -45, -56,]
-					        },
-					        {
-					            name: '女性',
-					            type: 'bar',
-					            barWidth: 10,
-					            xAxisIndex: 1,
-					            yAxisIndex: 1,
-					            itemStyle: {
-					                normal: {
-					                    show: true,
-					                    color: new this.$echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-					                        offset: 0,
-					                        color: "#ffd99e" // 0% 处的颜色
-					                    }, {
-					                        offset: 1,
-					                        color: "#ffc56a" // 100% 处的颜色
-					                    }], false),
-					                    barBorderRadius: 50,
-					                    borderWidth: 0,
-					                    borderColor: '#333',
-					                    label: {
-					                        show: true,
-					                        position: 'right',
-					                        formatter: function(v) {
-					                            return v.value+'%';
-					                        }
-					                    }
-					                }
-					            },
-					            data: [50, 52, 58, 55, 52, 55, 44]
-					        }
-					
-					    ]
-				})
-			},
+			openFullScreen2(state) {
+				const loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.7)'
+				});
+				if(state == false){
+					loading.close();
+				}
+			}
 		}
 	}
 </script>
@@ -1115,7 +476,7 @@
 		.modelForeBox{
 			height: 366px;
 			background: #fff;
-			#modelForeEchartsOne{
+			.modelForeEchartsOne{
 				width: 80%;
 				float: left;
 				height: 100%;
