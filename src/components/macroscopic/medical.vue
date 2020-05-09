@@ -1,7 +1,7 @@
 <template>
 	<div class="mainbox">
 		<div class="titleBox">湖北省<span>{{year}}年</span>医疗卫生情况
-			<div class="buttons">下载</div>
+			<div class="buttons" @click="downLoad" style="position: relative;">下载<a style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;" :href="baseUrlOne"></a></div>
 		</div>
 		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
 		<div class="modelDetailsBox" v-if="showAll">
@@ -103,6 +103,7 @@
 			return{
 				showAll:false,
 				loading:true,
+				baseUrlOne:'',
 				year:2017,
 				modelOneList:[
 					{label: '医院', value: 1},
@@ -134,7 +135,8 @@
 				},],
 				modelOneDataTwo:{
 					unit:'单位(所)',
-					legendList:['卫生机构总计'],
+					min:[30000,0],
+					legendList:['卫生机构总计(所)'],
 					nameList:[],
 					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
@@ -142,8 +144,9 @@
 				showModelOne:true,
 				modelOneIndex:0,
 				modelTwoDataOne:{
-					unit:'单位(张)',
-					legendList:['每千人口拥有医疗机构床位数','每千人口医生数'],
+					unit:'单位(张/人)',
+					min:[0,0],
+					legendList:['每千人口拥有医疗机构床位数(张)','每千人口医生数(人)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -173,16 +176,18 @@
 				modelForeDataOne:{
 					type:2, 
 					unit:'单位(人)',
-					legendList:['乡村医生','卫生员'],
+					legendList:['乡村医生(人)','卫生员(人)'],
 					nameList:[],
 					dataListOne:[],
+					min:[0,0],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},
 				modelForeDataTwo:{
 					unit:'单位(个)',
-					legendList:['村设置的医疗点数','村均医疗点数'],
+					legendList:['村设置的医疗点数(个)','村均医疗点数(个)'],
 					nameList:[],
+					min:[20000,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
@@ -217,6 +222,7 @@
 				this.modelOneIndex = 0;
 				this.modelFiveIndex = 0;
 				this.year = params;
+				this.baseUrlOne = IPConfigOne+'/api/healthcare/downloadExcel?year='+this.year;
 				try {
 					let res = await medicalApi(params)
 					console.log(res)
@@ -281,6 +287,9 @@
 				this.$nextTick(()=>{
 					this.showModelFive = true;
 				})
+			},
+			downLoad(){
+				
 			}
 		}
 	}

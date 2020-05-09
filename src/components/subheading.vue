@@ -3,7 +3,7 @@
 		<div class="decorationSpan"></div>
 		<div class="text">{{titles}}</div>
 		<div style="display: inline-block;float: right;">
-			<el-select v-model="itemChoosen" clearable placeholder="请选择" @change="itemChange">
+			<el-select v-model="itemChoosen" placeholder="请选择" @change="itemChange">
 				<el-option
 				v-for="item in items"
 				:key="item.value"
@@ -51,7 +51,7 @@
 	.titles{
 		width: 100%;
 		height: 56px;
-		line-height: 56px;
+		line-height: 56px; 
 		color: #333;
 		font-size: 16px;
 		border-bottom: 1px solid #eee;

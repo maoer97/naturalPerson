@@ -15,22 +15,25 @@
 				numOne:{
 					fontSize: 16,
 					color:'#0487ff',
-					fontStyle:'italic'
+					fontStyle:'italic',
+					padding:[4,0]
 				},
 				numTwo:{
-					fontSize: 20,
-					color:'#0487ff'
+					fontSize: 18,
+					color:'#0487ff',
+					padding:[4,0]
 				},
 				numThree:{
 					fontSize: 14,
-					color:'#333'
+					color:'#333',
+					padding:[4,0]
 				},
 			};
 			var echartData = this.datas.dataList;
 			// var echartData = [{value:45,name:'高中',selected:true},{value:56,name:'大专'},{value:76,name:'本科'},{value:22,name:'硕士'},{value:8,name:'博士'}];
 			var color = ['#6aadff','#ffec6a','#ffc56a','#32d89f','#5ed8f7'];
 			let myChart = this.$echarts.init(document.getElementById(this.id));
-			myChart.setOption({
+			var options = {
 				tooltip : {
 					trigger: 'item',
 					formatter: "{a} <br/>{b} : {c} 万人({d}%)"
@@ -66,10 +69,38 @@
 									// return '{numThree|' + params.name + '}{numOne|' + params.value + '}{numThree| 万人}';
 								}
 							}
+						},
+						labelLine:{
+							lineStyle:{
+								type:'dashed'
+							}
 						}
 					}
 				]
-			})
+			}
+			myChart.setOption(options)
+			// var app = {
+			// 	currentIndex: -1,
+			// };
+			// setInterval(function() {
+			// 	var dataLen = options.series[0].data.length;
+			// 	myChart.dispatchAction({
+			// 		type: 'downplay',
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex
+			// 	});
+			// 	app.currentIndex = (app.currentIndex + 1) % dataLen;
+			// 	myChart.dispatchAction({
+			// 		type: 'highlight', 
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex,
+			// 	});
+			// 	myChart.dispatchAction({
+			// 		type: 'showTip',
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex
+			// 	});
+			// }, 4000);
 		}
 	}
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<div class="mainbox">
 		<div class="titleBox">湖北省<span>{{year}}年</span>就业及收入
-			<div class="buttons">下载</div>
+			<div class="buttons" @click="downLoad" style="position: relative;">下载<a style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;" :href="baseUrlOne"></a></div>
 		</div>
 		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
 		<div class="modelDetailsBox" v-if="showAll">
@@ -11,18 +11,18 @@
 						<div class="modelboxs">
 							<subheading :items='modelOneList' :titles='"全社会从业人员情况"' @changeIndex='modelOneChange'></subheading>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="emmodelOneEchartsBoxs">
-									<init-echartsone :id='"emmodelOneEchartsBoxs"' :datas = 'modelOneDataOne[modelOneIndex]' v-if="showModelOne"></init-echartsone>
-								</div>
 								<div class="dataDetailBox">
 									<p style="color: #666666;">全社会从业人员</p>
 									<p style="color: #487fff;">({{modelOneDetail.year}}年)</p>
 									<div><span>{{modelOneDetail.qshcy}} </span> 万人</div>
-									<p>同比上期<span :class="modelOneDetail.type">{{modelOneDetail.cyratio}}%<i></i></span></p>
+									<p>同比上期<span :class="modelOneDetail.type">{{modelOneDetail.cyratio.toFixed(2)}}%<i></i></span></p>
 									<p style="color: #666666;margin-top: 24px;">劳动年龄人口</p>
 									<p style="color: #487fff;">({{modelOneDetail.year}}年)</p>
 									<div><span>{{modelOneDetail.ldrk}} </span> 万人</div>
 									<!-- <p>同比上期<span class="down">7.8%<i></i></span></p> -->
+								</div>
+								<div class="emmodelOneEchartsBoxs">
+									<init-echartsone :id='"emmodelOneEchartsBoxs"' :datas = 'modelOneDataOne[modelOneIndex]' v-if="showModelOne"></init-echartsone>
 								</div>
 							</div>
 						</div>
@@ -35,9 +35,6 @@
 						<div class="modelboxs">
 							<div class="levelTwoTitle"><span></span>就业人数及失业人数</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="emmodelTwoEchartsBoxs">
-									<init-echartsseven :id='"emmodelTwoEchartsBoxs"' :datas = 'modelTwoDataOne'></init-echartsseven>
-								</div>
 								<div class="dataDetailBox">
 									<p style="color: #666666;">新增就业人口</p>
 									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
@@ -47,6 +44,9 @@
 									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
 									<div><span>{{modelTwoDataOne.syrs}} </span> 万人</div>
 									<p>同比上期<span :class="modelTwoDataOne.syRatio>0?'up':'down'">{{modelTwoDataOne.syRatio}}%<i></i></span></p>
+								</div>
+								<div class="emmodelTwoEchartsBoxs">
+									<init-echartsseven :id='"emmodelTwoEchartsBoxs"' :datas = 'modelTwoDataOne'></init-echartsseven>
 								</div>
 							</div>
 						</div>
@@ -141,6 +141,7 @@
 			return{
 				loading:true,
 				fullscreenLoading: true,
+				baseUrlOne:'',
 				modelOneList:[
 					{label: '总人口数', value: 1},
 					{label: '按产业', value: 2},
@@ -160,7 +161,8 @@
 				modelOneDataOne:[
 				{
 					unit:'单位(万人)',
-					legendList:['全社会从业人员','劳动人员人口'],
+					min:[0,0],
+					legendList:['全社会从业人员(万人)','劳动人员人口(万人)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -168,7 +170,8 @@
 				},{
 					unit:'单位(万人)',
 					type:3,
-					legendList:['第一产业从业','第二产业从业','第三产业从业'],
+					min:[0,0],
+					legendList:['第一产业从业(万人)','第二产业从业(万人)','第三产业从业(万人)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -176,8 +179,9 @@
 					color:['#487fff','#84a9ff','#ffc56a','#ffd99e','#f0db4b','#fbeb81']
 				},{
 					unit:'单位(万人)',
-					legendList:['城镇从业人员','农村人员人口'],
+					legendList:['城镇从业人员(万人)','农村人员人口(万人)'],
 					nameList:[],
+					min:[1000,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc56a','#ffd99e']
@@ -189,9 +193,10 @@
 					xzjyrs:0,
 					xzjyRatio:0,
 					syrs:0,
+					min:[0,0],
 					syRatio:0,
 					unit:['单位(万人)','同比(%)'],
-					legendList:['新增就业人口','失业人数','新增就业人数同比','失业人数同比'],
+					legendList:['新增就业人口(万人)','失业人数(万人)','新增就业人数同比(%)','失业人数同比(%)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -235,8 +240,9 @@
 					]
 				},
 				modelSixDataOne:{
-					unit:['单位(万元)','同比(%)'],
-					legendList:['职工年平均工资','同比名义增长率','排除物价因素增长率'],
+					unit:['单位(万元)','同比增长率(%)'],
+					legendList:['职工年平均工资(万元)','同比名义增长率(%)','排除物价因素增长率(%)'],
+					min:[30000,0],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -261,6 +267,7 @@
 				this.modelOneIndex = 0;
 				this.modelForeIndex = 0;
 				this.year = params;
+				this.baseUrlOne = IPConfigOne+'/api/jysr/downloadExcel?year='+this.year;
 				try {
 					let res = await employmentApi(params)
 					console.log(res)
@@ -322,11 +329,12 @@
 				this.modelThreeDataTwo.dataListOne = [
 					{value:45,name:'第一产业',selected:true},{value:56,name:'第二产业'},{value:76,name:'第三产业'}
 				]
+				this.modelThreeDataTwo.dataListTwo = [];
 				this.modelThreeDataTwo.dataListTwo = [
-					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].nlnyNum),name:'农、林、牧、渔业'},
-					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].ckgyNum),name:'采矿供应业'},
 					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].wtylNum),name:'文体娱乐业'},
 					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].jzdcNum),name:'建筑地产业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].nlnyNum),name:'农、林、牧、渔业'},
+					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].ckgyNum),name:'采矿供应业'},
 					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].ggglNum),name:'公共管理业'},
 					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].jyNum),name:'教育业'},
 					{value:Number(allList.jysrThree.fhycyrsMap.fhycyrsList[0].wsgzNum),name:'卫生工作'},
@@ -372,13 +380,8 @@
 					this.showModelFore = true;
 				})
 			},
-			openFullScreen2() {
-				const loading = this.$loading({
-					lock: this.fullscreenLoading,
-					text: 'Loading',
-					spinner: 'el-icon-loading',
-					background: 'rgba(0, 0, 0, 0.7)'
-				});
+			downLoad(){
+				
 			}
 		}
 	}
@@ -393,15 +396,16 @@
 			background: #fff;
 			.emmodelOneEchartsBoxs{
 				height: 100%;
-				width: 75%;
+				width: 79%;
 				float: left;
 			}
 			.dataDetailBox{
-				width: 24%;
+				width: 18%;
+				margin-left: 2%;
 				height: 202px;
 				float: left;
 				margin-top: 58px;
-				border-left: 1px dashed #eeeeee;
+				border-right: 1px dashed #eeeeee;
 				p{
 					font-size: 14px;
 					line-height: 21px;
@@ -448,15 +452,16 @@
 			background: #fff;
 			.emmodelTwoEchartsBoxs{
 				height: 100%;
-				width: 75%;
+				width: 79%;
 				float: left;
 			}
 			.dataDetailBox{
-				width: 24%;
+				width: 18%;
+				margin-left: 2%;
 				height: 202px;
 				float: left;
 				margin-top: 58px;
-				border-left: 1px dashed #eeeeee;
+				border-right: 1px dashed #eeeeee;
 				p{
 					font-size: 14px;
 					line-height: 21px;

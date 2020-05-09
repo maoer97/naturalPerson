@@ -163,7 +163,7 @@
 				}]
 			}
 			let myChart = this.$echarts.init(document.getElementById(this.id));
-			myChart.setOption({
+			var options = {
 				grid: {
 					left: '5%',
 					right: '5%',
@@ -200,7 +200,30 @@
 				},
 				yAxis:yAxis,
 				series:series
-			})
+			}
+			myChart.setOption(options)
+			// var app = {
+			// 	currentIndex: -1,
+			// };
+			// setInterval(function() {
+			// 	var dataLen = options.series[0].data.length;
+			// 	myChart.dispatchAction({
+			// 		type: 'downplay',
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex
+			// 	});
+			// 	app.currentIndex = (app.currentIndex + 1) % dataLen;
+			// 	myChart.dispatchAction({
+			// 		type: 'highlight', 
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex,
+			// 	});
+			// 	myChart.dispatchAction({
+			// 		type: 'showTip',
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex
+			// 	});
+			// }, 4000);
 		}
 	}
 </script>

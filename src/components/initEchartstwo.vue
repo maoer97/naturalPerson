@@ -51,6 +51,7 @@
 				yAxis:{
 					type: 'value',
 					name: this.datas.unit,
+					min:this.datas.min[0],
 					axisLine:{
 						show:false,
 						lineStyle:{

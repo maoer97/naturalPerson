@@ -13,12 +13,12 @@
 		mounted() {
 			let myChart = this.$echarts.init(document.getElementById(this.id));
 			var units = this.datas.unit
-			myChart.setOption({
+			var options = {
 				legend: {
 				    show: true,
 					top:'20',
 					itemGap:20,
-				    textStyle: {
+				    textStyle: { 
 				      color: "#666"
 				    },
 				},
@@ -53,6 +53,7 @@
 					{
 						type: 'value',
 						name: this.datas.unit[0],
+						min:this.datas.min[0],
 						axisLine:{
 							show:false,
 							lineStyle:{
@@ -72,6 +73,7 @@
 					{
 						type: 'value',
 						show:true,
+						min:this.datas.min[1],
 						name :this.datas.unit[1],
 						axisLine:{
 							show:false,
@@ -121,7 +123,30 @@
 						}
 					}
 				]
-			})
+			}
+			myChart.setOption(options)
+			// var app = {
+			// 	currentIndex: -1,
+			// };
+			// setInterval(function() {
+			// 	var dataLen = options.series[0].data.length;
+			// 	myChart.dispatchAction({
+			// 		type: 'downplay',
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex
+			// 	});
+			// 	app.currentIndex = (app.currentIndex + 1) % dataLen;
+			// 	myChart.dispatchAction({
+			// 		type: 'highlight', 
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex,
+			// 	});
+			// 	myChart.dispatchAction({
+			// 		type: 'showTip',
+			// 		seriesIndex: 0,
+			// 		dataIndex: app.currentIndex
+			// 	});
+			// }, 4000);
 		}
 	}
 </script>

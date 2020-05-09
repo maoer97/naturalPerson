@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://192.168.102.185:8084', //接口
+        target: 'http://192.168.10.1:8086', //接口
         changeOrigin: true, //允许跨域
         pathRewrite: {
           '^/api': '', //重写
@@ -47,10 +47,10 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../CapabilityPlatform/index.html'),
+    index: path.resolve(__dirname, '../naturalPerson/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../CapabilityPlatform'),
+    assetsRoot: path.resolve(__dirname, '../naturalPerson'),
     assetsSubDirectory: 'static',
     assetsPublicPath: './',
 

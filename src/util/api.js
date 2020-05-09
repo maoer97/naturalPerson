@@ -2,8 +2,6 @@
 import axios from 'axios';
 var baseUrlOne = IPConfigOne;
 
-var baseUrlOne = IPConfigOne;
-
 
 //获取人口总接口
 export function populationApi(params) {
@@ -64,3 +62,15 @@ export function medicalApi(params) {
         })
     })
 }
+
+//下载
+// export function medicalApi(params) {
+// 	// return axios.post(baseUrlOne+'/api/rkqk/testHomeAll',params)
+// 	return new Promise((resolve, reject) => {
+//         axios.post(baseUrlOne+'/api/healthcare/homeAll?year=' + params).then((res) => {
+// 			resolve(res)
+//         }).catch((err) => {
+// 			reject(err)
+//         })
+//     })
+// }

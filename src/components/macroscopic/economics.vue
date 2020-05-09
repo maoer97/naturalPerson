@@ -1,7 +1,7 @@
 <template>
 	<div class="mainbox">
-		<div class="titleBox">湖北省<span>{{year}}年第四季度</span>经济水平
-			<div class="buttons">下载</div>
+		<div class="titleBox">湖北省<span>{{year}}年</span>经济水平
+			<div class="buttons" @click="downLoad" style="position: relative;">下载<a style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;" :href="baseUrlOne"></a></div>
 		</div>
 		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
 		<div class="modelDetailsBox" v-if="showAll">
@@ -12,24 +12,19 @@
 							<div class="levelTwoTitle"><span></span>国内生产总值情况</div>
 							<!-- <subheading :items='modelOneList' :titles='"国内生产总值情况"' @changeIndex='modelOneChange'></subheading> -->
 							<div style="width: 100%;height: calc(100% - 56px);">
+								<div class="dataDetailBox">
+									<p style="color: #666666;">湖北省GDP</p>
+									<p style="color: #487fff;">({{modelOneDataOne.year}}年)</p>
+									<div><span>{{modelOneDataOne.sumGdp}} </span> 亿元</div>
+									<p>同比上期<span :class="modelOneDataOne.sumGdpRate>0?'up':'down'">{{modelOneDataOne.sumGdpRate}}%<i></i></span></p>
+									<p style="color: #666666;margin-top: 24px;">湖北省人均GDP</p>
+									<p style="color: #487fff;">({{modelOneDataOne.year}}年)</p>
+									<div><span>{{modelOneDataOne.aveGdp}} </span> 元</div>
+									<p>同比上期<span :class="modelOneDataOne.aveGdpRate>0?'up':'down'">{{modelOneDataOne.aveGdpRate}}%<i></i></span></p>
+									<!-- <p>同比上期<span class="down">7.8%<i></i></span></p> -->
+								</div>
 								<div class="ecmodelOneEchartsOne">
 									<map-echarts :id = '"ecmodelOneEchartsOne"' :datas = 'modelOneDataOne'></map-echarts>
-								</div>
-								<div class="dataDetailsBox">
-									<div class="cardBox" style="width: 330px;height: 150px;background: #6aadff;margin-top: 32px;margin-left: 60px;">
-										<div class="detailBox">
-											<p style="font-size: 14px;padding-top: 20px;">湖北省GDP({{modelOneDataOne.year}}年)</p>
-											<p style="font-size: 14px;padding-top: 20px;text-align: center;"><span style="font-size: 32px;padding-top: 22px;">{{modelOneDataOne.sumGdp}}</span> 亿元</p>
-											<p style="height: 40px;line-height: 40px;border-top: 1px solid rgba(255,255,255,0.4);margin-top: 20px;">同比上期 {{modelOneDataOne.sumGdpRate}}% <i :class="modelOneDataOne.sumGdpRate>0? 'up':'down'"></i></p>
-										</div>
-									</div>
-									<div class="cardBox" style="width: 330px;height: 150px;background: #5ed8f7;margin-top: 20px;margin-left: 60px;">
-										<div class="detailBox">
-											<p style="font-size: 14px;padding-top: 20px;">湖北省人均GDP({{modelOneDataOne.year}}年)</p>
-											<p style="font-size: 14px;padding-top: 20px;text-align: center;"><span style="font-size: 32px;padding-top: 22px;">{{modelOneDataOne.aveGdp}}</span> 元</p>
-											<p style="height: 40px;line-height: 40px;border-top: 1px solid rgba(255,255,255,0.4);margin-top: 20px;">同比上期 {{modelOneDataOne.aveGdpRate}}% <i :class="modelOneDataOne.aveGdpRate>0? 'up':'down'"></i></p>
-										</div>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -42,7 +37,7 @@
 						<div class="modelboxs">
 							<div class="levelTwoTitle"><span></span>居民人均可支配收入</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="dataDetailBox">
+								<!-- <div class="dataDetailBox">
 									<div class="cardBox" style="width: 212px;height: 106px;background: #ffc56a;margin: 0 auto; margin-top: 20px;">
 										<div class="detailBox">
 											<p style="font-size: 12px;padding-top: 14px;">城镇居民人均可支配收入({{modelTwoDataOne.year}}年)</p>
@@ -61,9 +56,21 @@
 										<div class="detailBox">
 											<p style="font-size: 12px;padding-top: 14px;">城乡居民收入比({{modelTwoDataOne.year}}年)</p>
 											<p style="font-size: 14px;padding-top: 12px;text-align: center;"><span style="font-size: 20px;">{{modelTwoDataOne.rate}}</span> 元</p>
-											<!-- <p style="height: 36px;line-height: 36px;border-top: 1px solid rgba(255,255,255,0.4);margin-top: 12px;">同比上期 0.2% <i class="down"></i></p> -->
 										</div>
 									</div>
+								</div> -->
+								<div class="dataDetailBox">
+									<p style="color: #666666;">城镇居民人均可支配收入</p>
+									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
+									<div><span>{{modelTwoDataOne.urban}} </span> 元</div>
+									<p>同比上期<span :class="modelTwoDataOne.urbanRatio>0?'up':'down'">{{modelTwoDataOne.urbanRatio}}%<i></i></span></p>
+									<p style="color: #666666;margin-top: 24px;">农村居民人均可支配收入</p>
+									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
+									<div><span>{{modelTwoDataOne.rural}} </span> 元</div>
+									<p>同比上期<span :class="modelTwoDataOne.ruralRatio>0?'up':'down'">{{modelTwoDataOne.ruralRatio}}%<i></i></span></p>
+									<p style="color: #666666;margin-top: 24px;">城乡居民收入比</p>
+									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
+									<div><span>{{modelTwoDataOne.rate}} </span> 元</div>
 								</div>
 								<div class="ecmodelTwoEchartsOne">
 									<init-echartsseven :id='"ecmodelTwoEchartsOne"' :datas = 'modelTwoDataOne'></init-echartsseven>
@@ -125,7 +132,7 @@
 						<div class="modelboxs">
 							<div class="levelTwoTitle"><span></span>个税减税情况</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="dataDetailBox">
+								<div class="dataDetailBoxs">
 									<div class="detailBox" style="background: #ffc56a;">
 										<p style="padding-top: 28px;">享受扣除人次</p>
 										<p style="padding-top: 20px;"><span>{{modelSixList.xsrc}}</span>万人</p>
@@ -218,6 +225,7 @@
 				showAll:false,
 				loading:true,
 				year:2017,
+				baseUrlOne:'',
 				// modelOneList:[
 				// 	{label: 'GDP', value: 1},
 				// 	{label: '人均GDP', value: 2}
@@ -243,8 +251,9 @@
 					rural:0,
 					ruralRatio:0,
 					rate:0,
+					min:[0,0],
 					unit:['单位(元)','同比(%)'],
-					legendList:['城镇居民人均','农村居民人均','增长率(城镇)','增长率(农村)'],
+					legendList:['城镇居民人均(元)','农村居民人均(元)','增长率(城镇)(%)','增长率(农村)(%)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -253,8 +262,9 @@
 					color:['#487fff','#84a9ff','#ffc56a','#ffd99e','#ffa39c','#3ceeb1']
 				},
 				modelThreeDataOne:{
+					min:[0,0],
 					unit:'单位(元)',
-					legendList:['城镇居民人均消费支出','农村居民人均消费支出'],
+					legendList:['城镇居民人均消费支出(元)','农村居民人均消费支出(元)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -275,17 +285,19 @@
 				},
 				modelFiveDataOne:{
 					unit:'单位(平方米)',
-					legendList:['城镇居民人均住房面积','农村居民人均住房面积'],
+					legendList:['城镇居民人均住房面积(平方米)','农村居民人均住房面积(平方米)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
+					min:[30,0],
 					color:['#487fff','#84a9ff','#f0db4b','#fbeb81']
 				},
 				modelFiveDataTwo:{
 					unit:'单位(辆)',
-					legendList:['城镇每百户汽车保有量'],
+					legendList:['城镇每百户汽车保有量(辆)'],
 					nameList:[],
 					dataListOne:[],
+					min:[0,0],
 					color:['#80ebf5','#3dc5dd']
 				},
 				modelSixList:{
@@ -336,6 +348,7 @@
 				this.showAll = false;
 				this.loading = true;
 				this.year = params;
+				this.baseUrlOne = IPConfigOne+'/api/economic/downloadExcel?year='+this.year;
 				try {
 					let res = await economicsApi(params)
 					console.log(res)
@@ -369,14 +382,14 @@
 				//模块三
 				var xfzc = allList.economicThree.latestPcce.filter(item=>item.typeName=='城镇')[0];
 				this.modelThreeDataTwo.data = [
-					{name:'居住支出',value:Number(xfzc.residence)},
-					{name:'家庭设备和服务支出',value:Number(xfzc.homeDevice)},
-					{name:'交通通讯支出',value:Number(xfzc.jttx)},
-					{name:'衣着支出',value:Number(xfzc.clothing)},
-					{name:'食品烟酒支出',value:Number(xfzc.food)},
 					{name:'医疗保健支出',value:Number(xfzc.medical)},
+					{name:'衣着支出',value:Number(xfzc.clothing)},
+					{name:'家庭设备和服务支出',value:Number(xfzc.homeDevice)},
+					{name:'居住支出',value:Number(xfzc.residence)},
+					{name:'其他支出',value:Number(xfzc.other)},
+					{name:'食品烟酒支出',value:Number(xfzc.food)},
 					{name:'文教娱乐支出',value:Number(xfzc.wjyl)},
-					{name:'其他支出',value:Number(xfzc.other)}
+					{name:'交通通讯支出',value:Number(xfzc.jttx)},
 				]
 				for(var i in allList.economicThree.czxfgcList){
 					this.modelThreeDataOne.nameList.push(allList.economicThree.czxfgcList[i].year);
@@ -412,7 +425,9 @@
 				this.loading = false;
 				this.showAll = true;
 			},
-			
+			downLoad(){
+				
+			}
 			// modelOneChange(e){
 			// 	this.modelOneIndex = e-1;
 			// 	console.log(e);
@@ -433,28 +448,27 @@
 			height: 440px;
 			background: #fff;
 			.ecmodelOneEchartsOne{
-				width: 55%;
+				width: 79%;
 				height: 100%;
-				margin-left: 10%;
 				float: left;
 			}
-			.dataDetailsBox{
-				width: 35%;
-				float: left;
-				height: 100%;
-			}
+			// .dataDetailsBox{
+			// 	width: 35%;
+			// 	float: left;
+			// 	height: 100%;
+			// }
 		}
 		.modelTwoBox{
 			height: 472px;
 			background: #fff;
-			.dataDetailBox{
-				float: left;
-				width: 30%;
-				height: 100%;
-				margin-top: 10px;
-			}
+			// .dataDetailBox{
+			// 	float: left;
+			// 	width: 30%;
+			// 	height: 100%;
+			// 	margin-top: 10px;
+			// }
 			.ecmodelTwoEchartsOne{
-				width: 70%;
+				width: 79%;
 				float: left;
 				height: 100%;
 			}
@@ -510,7 +524,7 @@
 					font-size: 14px;
 				}
 			}
-			.dataDetailBox{
+			.dataDetailBoxs{
 				float: left;
 				height: 346px;
 				width: 500px;
@@ -567,6 +581,53 @@
 				}
 			}
 			
+		}
+	}
+	.dataDetailBox{
+		width: 18%;
+		margin-left: 2%;
+		height: 202px;
+		float: left;
+		margin-top: 58px;
+		border-right: 1px dashed #eeeeee;
+		p{
+			font-size: 14px;
+			line-height: 21px;
+			padding-left: 45px;
+			.up{
+				color: #19c375;
+				padding-left: 5px;
+				i{
+					background: url(../../assets/img/upicon.png);
+					width: 10px;
+					height: 13px;
+					display: inline-block;
+				}
+			}
+			.down{
+				color: #ef9751;
+				padding-left: 5px;
+				i{
+					background: url(../../assets/img/downicon.png);
+					width: 10px;
+					height: 13px;
+					display: inline-block;
+				}
+			}
+		}
+		div{
+			line-height: 28px;
+			padding-left: 45px;
+			color: #333;
+			font-size: 14px;
+			span{
+				display: inline-block;
+				font-size: 20px;
+				font-family: Arial;
+				color: #487fff;
+				font-weight: bold;
+				font-style:italic;
+			}
 		}
 	}
 </style>

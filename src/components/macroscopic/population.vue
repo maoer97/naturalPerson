@@ -1,7 +1,7 @@
 <template>
-	<div class="mainbox">
+	<div class="mainbox" ref = 'mainbox'>
 		<div class="titleBox">湖北省<span>{{year}}年</span>人口基本情况
-			<div class="buttons"><a href="">下载</a></div>
+			<div class="buttons" @click="downLoad" style="position: relative;">下载<a style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;" :href="baseUrlOne"></a></div>
 		</div>
 		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
 		<div class="modelDetailsBox"  v-if="showAll">
@@ -11,39 +11,23 @@
 						<div class="modelboxs">
 							<subheading :items='modelOneList' :titles='"全省人口情况"' @changeIndex='modelOneChange'></subheading>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="modelEchartsBox">
-									<init-echartssix :id='"modelEchartsBox"' :datas='modelOneDataOne[modelOneIndex]' v-if="showModelOne"></init-echartssix>
-								</div>
 								<div class="dataDetailBox">
 									<p style="color: #666666;">全省总人口</p>
 									<p style="color: #487fff;">({{modelOneDataOneD.year}}年)</p>
 									<div><span>{{modelOneDataOneD.sum}} </span> 万人</div>
 									<p style="color: #666666;margin-top: 34px;">人口自然增长率</p>
 									<p style="color: #487fff;">({{modelOneDataOneD.year}}年)</p>
-									<div><span>{{modelOneDataOneD.ratio}} </span> %</div>
+									<div><span>{{modelOneDataOneD.ratio}} </span> ‰</div>
+								</div>
+								<div class="modelEchartsBox">
+									<init-echartssix :id='"modelEchartsBox"' :datas='modelOneDataOne[modelOneIndex]' v-if="showModelOne"></init-echartssix>
 								</div>
 							</div>
 						</div>
 					</div>
 				</el-col>
 			</el-row>
-			<el-row>
-				<el-col :span='24'>
-					<div class="modelTwoBox">
-						<div class="modelboxs">
-							<div class="levelTwoTitle"><span></span>生育情况及趋势分析</div>
-							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="modelTwoEchartsOne">
-									<init-echartsfore :id='"modelTwoEchartsOne"' :datas = 'modelTwoDataOne'></init-echartsfore>
-								</div>
-								<div class="modelTwoEchartsTwo">
-									<init-echartsone :id='"modelTwoEchartsTwo"' :datas = 'modelTwoDataTwo'></init-echartsone>
-								</div>
-							</div>
-						</div>
-					</div>
-				</el-col>
-			</el-row>
+			
 			<el-row>
 				<el-col :span='24'>
 					<div class="modelThreeBox">
@@ -114,7 +98,23 @@
 					</div>
 				</el-col>
 			</el-row>
-			
+			<el-row>
+				<el-col :span='24'>
+					<div class="modelTwoBox">
+						<div class="modelboxs">
+							<div class="levelTwoTitle"><span></span>生育情况及趋势分析</div>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<div class="modelTwoEchartsOne">
+									<init-echartsfore :id='"modelTwoEchartsOne"' :datas = 'modelTwoDataOne'></init-echartsfore>
+								</div>
+								<div class="modelTwoEchartsTwo">
+									<init-echartsone :id='"modelTwoEchartsTwo"' :datas = 'modelTwoDataTwo'></init-echartsone>
+								</div>
+							</div>
+						</div>
+					</div>
+				</el-col>
+			</el-row>
 		</div>
 		
 	</div>
@@ -135,6 +135,7 @@
 		// props:['year'],
 		data(){
 			return{
+				baseUrlOne:'',
 				showAll:false,
 				loading:true,
 				modelOneList:[
@@ -152,22 +153,25 @@
 					year:0
 				},
 				modelOneDataOne:[{
-					unit:['单位(万人)','增长率'],
-					legendList:['全省总人口','人口自然增长率'],
+					unit:['单位(万人)','增长率(‰)'],
+					min:[5500,4],
+					legendList:['全省总人口(万人)','人口自然增长率(‰)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc56a']
 				},{
-					unit:['单位(万人)','增长率'],
-					legendList:['全省出生人口','出生人口自然增长率'],
+					unit:['单位(万人)','增长率(‰)'],
+					legendList:['全省出生人口(万人)','出生人口变化率(‰)'],
+					min:[60,10],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc56a']
 				},{
-					unit:['单位(万人)','增长率'],
-					legendList:['全省死亡总人口','死亡人口自然增长率'],
+					unit:['单位(万人)','增长率(‰)'],
+					legendList:['全省死亡总人口(万人)','死亡人口变化率(‰)'],
+					min:[30,5],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -182,8 +186,9 @@
 				},
 				modelTwoDataTwo:{
 					type:2,
+					min:[0],
 					unit:['单位(万人)'],
-					legendList:['出生人口','二胎人口'],
+					legendList:['出生人口(万人)','二胎人口(万人)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -191,7 +196,8 @@
 				},
 				modelThreeDataOne:{
 					unit:'单位(万人)',
-					legendList:['常住人口','户籍人口'],
+					min:[5000,0],
+					legendList:['常住人口(万人)','户籍人口(万人)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -199,7 +205,8 @@
 				},
 				modelThreeDataTwo:{
 					unit:['单位(万人)','城镇化率(%)'],
-					legendList:['城镇人口','城镇化率'],
+					min:[3000,0],
+					legendList:['城镇人口(万人)','城镇化率(%)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[]
@@ -233,7 +240,7 @@
 				modelSixDataOne:{
 					type:2,
 					unit:['单位(万人)','男女比'],
-					legendList:['适婚男性','适婚女性','适婚男女比例'],
+					legendList:['适婚男性(万人)','适婚女性(万人)','适婚男女比例'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
@@ -241,8 +248,9 @@
 				},
 				modelSixDataTwo:{
 					unit:['单位(个)','增长率(%)'],
-					legendList:['结婚家庭数','增长率'],
+					legendList:['结婚家庭数(个)','增长率(%)'],
 					nameList:[],
+					min:[400000,-0.2],
 					dataListOne:[],
 					dataListTwo:[]
 				},
@@ -252,9 +260,8 @@
 			}
 		},
 		mounted() {
-			// this.openFullScreen2(true)
 			this.getData(2017);
-			// this.modelForeChange(1);
+			this.$refs.mainbox.scrollTo(0,0);
 		},
 		methods:{
 			modelOneChange(e){
@@ -279,6 +286,7 @@
 				this.modelOneIndex = 0;
 				this.modelForeIndex=0;
 				this.year = params;
+				this.baseUrlOne = IPConfigOne+'/api/rkqk/downloadExcel?year='+this.year;
 				try {
 					let res = await populationApi(params)
 					console.log(res)
@@ -367,17 +375,13 @@
 				// this.openFullScreen2(false)
 				this.loading = false;
 				this.showAll = true;
+				
 			},
-			openFullScreen2(state) {
-				const loading = this.$loading({
-					lock: true,
-					text: 'Loading',
-					spinner: 'el-icon-loading',
-					background: 'rgba(0, 0, 0, 0.7)'
-				});
-				if(state == false){
-					loading.close();
-				}
+			downLoad(){
+				// this.$message({
+				// 	message: '抱歉，暂无相关下载资源',
+				// 	type: 'warning'
+				// });
 			}
 		}
 	}
@@ -415,15 +419,16 @@
 			}
 			.modelEchartsBox{
 				height: 100%;
-				width: 75%;
+				width: 79%;
 				float: left;
 			}
 			.dataDetailBox{
-				width: 24%;
+				width: 18%;
+				margin-left: 2%;
 				height: 202px;
 				float: left;
 				margin-top: 58px;
-				border-left: 1px dashed #eeeeee;
+				border-right: 1px dashed #eeeeee;
 				p{
 					font-size: 14px;
 					line-height: 21px;
@@ -486,7 +491,7 @@
 				float: left;
 				height: 232px;
 				margin-top: 36px;
-				border-left: 1px dashed #eeeeee;
+				border-right: 1px dashed #eeeeee;
 				p{
 					font-size: 14px;
 					color: #666666;

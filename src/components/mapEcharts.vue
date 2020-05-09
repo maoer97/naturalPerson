@@ -3,7 +3,7 @@
 </template>
 
 <script>
-	import uploadedDataURL from "../../static/allcity.json"
+	import uploadedDataURL from "../../static/allcity.json" 
 	export default{
 		data(){
 			return{
@@ -156,64 +156,64 @@
 					}]
 				})
 				
-				var count = 0;
-				var timeTicket = null;
-				var dataLength = that.datas.data.length;
-				timeTicket && clearInterval(timeTicket);
-				timeTicket = setInterval(function() {
-				    myChart.dispatchAction({
-				        type: 'downplay',
-				        seriesIndex: 0,
-				    });
-				    myChart.dispatchAction({
-				        type: 'highlight',
-				        seriesIndex: 0,
-				        dataIndex: (count) % dataLength
-				    });
-				    myChart.dispatchAction({
-				        type: 'showTip',
-				        seriesIndex: 0,
-				        dataIndex: (count) % dataLength
-				    });
-				    count++;
-				}, 1500);
-				myChart.on('mouseover', function(params) {
-				    clearInterval(timeTicket);
-				    myChart.dispatchAction({
-				        type: 'downplay',
-				        seriesIndex: 0
-				    });
-				    myChart.dispatchAction({
-				        type: 'highlight',
-				        seriesIndex: 0,
-				        dataIndex: params.dataIndex
-				    });
-				    myChart.dispatchAction({
-				        type: 'showTip',
-				        seriesIndex: 0,
-				        dataIndex: params.dataIndex,
-				    });
-				});
-				myChart.on('mouseout', function(params) {
-				    timeTicket && clearInterval(timeTicket);
-				    timeTicket = setInterval(function() {
-				        myChart.dispatchAction({
-				            type: 'downplay',
-				            seriesIndex: 0,
-				        });
-				        myChart.dispatchAction({
-				            type: 'highlight',
-				            seriesIndex: 0,
-				            dataIndex: (count) % dataLength
-				        });
-				        myChart.dispatchAction({
-				            type: 'showTip',
-				            seriesIndex: 0,
-				            dataIndex: (count) % dataLength
-				        });
-				        count++;
-				    }, 1000);
-				});
+				// var count = 0;
+				// var timeTicket = null;
+				// var dataLength = that.datas.data.length;
+				// timeTicket && clearInterval(timeTicket);
+				// timeTicket = setInterval(function() {
+				//     myChart.dispatchAction({
+				//         type: 'downplay',
+				//         seriesIndex: 0,
+				//     });
+				//     myChart.dispatchAction({
+				//         type: 'highlight',
+				//         seriesIndex: 0,
+				//         dataIndex: (count) % dataLength
+				//     });
+				//     myChart.dispatchAction({
+				//         type: 'showTip',
+				//         seriesIndex: 0,
+				//         dataIndex: (count) % dataLength
+				//     });
+				//     count++;
+				// }, 1500);
+				// myChart.on('mouseover', function(params) {
+				//     clearInterval(timeTicket);
+				//     myChart.dispatchAction({
+				//         type: 'downplay',
+				//         seriesIndex: 0
+				//     });
+				//     myChart.dispatchAction({
+				//         type: 'highlight',
+				//         seriesIndex: 0,
+				//         dataIndex: params.dataIndex
+				//     });
+				//     myChart.dispatchAction({
+				//         type: 'showTip',
+				//         seriesIndex: 0,
+				//         dataIndex: params.dataIndex,
+				//     });
+				// });
+				// myChart.on('mouseout', function(params) {
+				//     timeTicket && clearInterval(timeTicket);
+				//     timeTicket = setInterval(function() {
+				//         myChart.dispatchAction({
+				//             type: 'downplay',
+				//             seriesIndex: 0,
+				//         });
+				//         myChart.dispatchAction({
+				//             type: 'highlight',
+				//             seriesIndex: 0,
+				//             dataIndex: (count) % dataLength
+				//         });
+				//         myChart.dispatchAction({
+				//             type: 'showTip',
+				//             seriesIndex: 0,
+				//             dataIndex: (count) % dataLength
+				//         });
+				//         count++;
+				//     }, 4000);
+				// });
 			})
 		}
 	}

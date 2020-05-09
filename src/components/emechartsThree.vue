@@ -86,7 +86,7 @@
 				},
 				series:[
 					{
-						name:'平均工资',
+						name:'平均工资(元)',
 						type:'bar',
 						barWidth: 18,
 						itemStyle: {
@@ -100,7 +100,18 @@
 						        }
 						    ])
 						},
-						data:valuelist
+						data:valuelist,
+						label: {
+						    normal: {
+						        show: true,
+						        position: 'top',
+						        color: '#333333',
+						        fontSize: '10',
+								formatter: function(params) {
+									return params.data + '元'
+								}
+						    }
+						},
 					}
 				]
 			})

@@ -18,15 +18,18 @@
 				numOne:{
 					fontSize: 16,
 					color:'#0487ff',
-					fontStyle:'italic'
+					fontStyle:'italic',
+					padding:[2,0]
 				},
 				numTwo:{
-					fontSize: 20,
-					color:'#0487ff'
+					fontSize: 18,
+					color:'#0487ff',
+					padding:[2,0]
 				},
 				numThree:{
 					fontSize: 14,
-					color:'#333'
+					color:'#333',
+					padding:[2,0]
 				},
 			};
 			let myChart = this.$echarts.init(document.getElementById(this.id));
@@ -76,7 +79,12 @@
 								}
 							}
 						},
-						data:echartDataTwo
+						data:echartDataTwo,
+						labelLine:{
+							lineStyle:{
+								type:'dashed'
+							}
+						}
 					}
 				]
 				

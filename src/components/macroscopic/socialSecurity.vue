@@ -1,7 +1,7 @@
 <template>
 	<div class="mainbox">
 		<div class="titleBox">湖北省<span>{{year}}年</span>社会保障情况
-			<div class="buttons">下载</div>
+			<div class="buttons" @click="downLoad" style="position: relative;">下载<a style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;" :href="baseUrlOne"></a></div>
 		</div>
 		<div style="width: 100%;height: 200px; z-index: 9;" v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(255, 255, 255, 0.1)" v-show="loading"></div>
 		<div class="modelDetailsBox" v-if="showAll">
@@ -94,7 +94,7 @@
 							<div class="levelTwoTitle"><span></span>公积金缴纳情况分析</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
 								<div style="float: left;width: 40%;margin: 0 5%;height: 100%;">
-									<init-echartsone :id='"somodelSixEchartsOne"' :datas = 'modelSixDataOne'></init-echartsone>
+									<init-echartssix :id='"somodelSixEchartsOne"' :datas = 'modelSixDataOne'></init-echartssix>
 								</div>
 								<div style="float: left;width: 40%;margin: 0 5%;height: 100%;">
 									<init-echartsone :id='"somodelSixEchartsTwo"' :datas = 'modelSixDataTwo'></init-echartsone>
@@ -113,14 +113,16 @@
 	import initEchartstwo from '../initEchartstwo.vue'
 	import initEchartsthree from '../initEchartsthree.vue'
 	import initEchartsfore from '../initEchartsfore.vue'
+	import initEchartssix from '../initEchartssix.vue'
 	import emechartsOne from '../emechartsOne.vue'
 	import initEchartsfive from '../initEchartsfive.vue'
 	import subheading from '../subheading.vue'
 	import {socialSecurityApi} from '../../util/api.js'
 	export default{
-		components:{emechartsOne,subheading,initEchartsone,initEchartstwo,initEchartsthree,initEchartsfore,initEchartsfive},
+		components:{emechartsOne,subheading,initEchartsone,initEchartstwo,initEchartsthree,initEchartsfore,initEchartssix,initEchartsfive},
 		data(){
 			return{
+				baseUrlOne:'',
 				modelOneList:[
 					{label: '征缴收入', value: 1},
 					{label: '支出', value: 2}
@@ -168,68 +170,78 @@
 				modelOneIndex:0,
 				modelTwoDataOne:[{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					min:[0,0],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				}],
 				modelTwoDataTwo:[{
 					unit:'单位(万元)',
-					legendList:['累计结余'],
+					legendList:['累计结余(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['累计结余'],
+					legendList:['累计结余(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['累计结余'],
+					legendList:['累计结余(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['累计结余'],
+					legendList:['累计结余(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
 				},{
 					unit:'单位(万元)',
-					legendList:['累计结余'],
+					legendList:['累计结余(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					color:['#80ebf5','#3dc5dd']
 				},],
@@ -249,32 +261,37 @@
 				},
 				modelForeDataOne:[{
 					unit:['单位(万人)','覆盖率(%)'],
-					legendList:['参保人数','覆盖率'],
+					legendList:['参保人数(万人)','覆盖率(%)'],
+					min:[1000,0],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[]
 				},{
 					unit:['单位(万人)','覆盖率(%)'],
-					legendList:['参保人数','覆盖率'],
+					legendList:['参保人数(万人)','覆盖率(%)'],
 					nameList:[],
+					min:[500,0],
 					dataListOne:[],
 					dataListTwo:[]
 				},{
 					unit:['单位(万人)','覆盖率(%)'],
-					legendList:['参保人数','覆盖率'],
+					legendList:['参保人数(万人)','覆盖率(%)'],
 					nameList:[],
+					min:[500,0],
 					dataListOne:[],
 					dataListTwo:[]
 				},{
 					unit:['单位(万人)','覆盖率(%)'],
-					legendList:['参保人数','覆盖率'],
+					legendList:['参保人数(万人)','覆盖率(%)'],
 					nameList:[],
+					min:[500,0],
 					dataListOne:[],
 					dataListTwo:[]
 				},{
 					unit:['单位(万人)','覆盖率(%)'],
-					legendList:['参保人数','覆盖率'],
+					legendList:['参保人数(万人)','覆盖率(%)'],
 					nameList:[],
+					min:[400,0],
 					dataListOne:[],
 					dataListTwo:[]
 				}],
@@ -313,36 +330,41 @@
 				modelForeIndex:0,
 				modelFiveData:[{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					min:[0,0],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
+					min:[0,0],
 					nameList:[],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
 				},{
 					unit:'单位(万元)',
-					legendList:['征缴收入','支出'],
+					legendList:['征缴收入(万元)','支出(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#ffc66d','#ffd89a']
@@ -350,17 +372,19 @@
 				showModelFive:true,
 				modelFiveIndex:0,
 				modelSixDataOne:{
-					unit:'单位(万人)',
-					legendList:['全年公积金缴存金额','实缴职工人数'],
+					unit:['单位(万人)','单位(人)'],
+					legendList:['公积金缴存金额(万人)','实缴职工人数(人)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},
 				modelSixDataTwo:{
 					unit:'单位(万元)',
-					legendList:['年末公积金贷款总额','年末公积金贷款余额'],
+					legendList:['年末公积金贷款总额(万元)','年末公积金贷款余额(万元)'],
 					nameList:[],
+					min:[0,0],
 					dataListOne:[],
 					dataListTwo:[],
 					color:['#80ebf5','#3dc5dd','#f0db4b','#fbeb81']
@@ -382,6 +406,7 @@
 				this.modelForeIndex = 0;
 				this.modelFiveIndex = 0;
 				this.year = params;
+				this.baseUrlOne = IPConfigOne+'/api/socialsecurity/downloadExcel?year='+this.year;
 				try {
 					let res = await socialSecurityApi(params)
 					console.log(res)
@@ -560,6 +585,9 @@
 					this.showModelFive = true;
 				})
 			},
+			downLoad(){
+				
+			}
 		}
 	}
 </script>

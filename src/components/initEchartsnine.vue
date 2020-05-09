@@ -16,18 +16,28 @@
 			let myChart = this.$echarts.init(document.getElementById(this.id));
 			var rich = {
 				numOne:{
-					fontSize: 16,
+					fontSize: 10,
 					color:'#0487ff',
-					fontStyle:'italic'
+					fontStyle:'italic',
+					padding: [2, 4],
 				},
 				numTwo:{
-					fontSize: 20,
-					color:'#0487ff'
+					fontSize: 14,
+					color:'#0487ff',
+					padding: [2, 4],
 				},
 				numThree:{
-					fontSize: 14,
-					color:'#333'
+					fontSize: 12,
+					color:'#333',
+					padding: [2, 4],
 				},
+				circle:{
+					width:5,
+					heigh:5,
+					borderRadius:5,
+					background:'#0487ff',
+					verticalAlign: 'right'
+				}
 			};
 			var totals = 0;
 			for(var i in datas.data){
@@ -72,8 +82,15 @@
 										total += value.value;
 									});
 									percent = ((params.value / total) * 100).toFixed(1);
-									return '{numThree|' + params.name + '}\n{numOne|' + params.value + '}{numThree| '+ datas.unit +'}\n{numTwo|' + percent + '%}';
+									return '{numThree|' + params.name + '}\n{numOne|' + params.value + '}{numThree| '+ datas.unit +'}{circle|}\n{numTwo|' + percent + '%}';
 								}
+							}
+						},
+						labelLine:{
+							length:20,
+							length2:50,
+							lineStyle:{
+								type:'dashed'
 							}
 						},
 						data:datas.data
