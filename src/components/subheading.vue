@@ -16,6 +16,7 @@
 				title=""
 				width="214"
 				trigger="hover"
+				v-if="false"
 				>
 				<div class="questionContent">
 					<p>

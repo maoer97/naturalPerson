@@ -17,17 +17,17 @@
 						<el-submenu index='1'>
 							<template slot='title'>
 								<i :class="itemIndex<20?'myicon icons11':'myicon icons1'"></i>
-								<span :class="itemIndex<20?'title2':'title1'" style="font-size: 16px;">宏观情况</span>
+								<span :class="itemIndex<20?'title2':'title1'" style="font-size: 16px;">自然人宏观画像</span>
 							</template>
 							<el-menu-item-group>
 								<el-menu-item index="1-1" @click='showMain(11)'><span :class="itemIndex==11?'point2':'point1'"></span>人口基本情况</el-menu-item>
 								<el-menu-item index="1-2" @click='showMain(12)'><span :class="itemIndex==12?'point2':'point1'"></span>就业及收入</el-menu-item>
-								<el-menu-item index="1-3" @click='showMain(13)'><span :class="itemIndex==13?'point2':'point1'"></span>社会保障情况</el-menu-item>
+								<!-- <el-menu-item index="1-3" @click='showMain(13)'><span :class="itemIndex==13?'point2':'point1'"></span>社会保障情况</el-menu-item> -->
 								<el-menu-item index="1-4" @click='showMain(14)'><span :class="itemIndex==14?'point2':'point1'"></span>经济水平</el-menu-item>
 								<el-menu-item index="1-5" @click='showMain(15)'><span :class="itemIndex==15?'point2':'point1'"></span>医疗卫生情况</el-menu-item>
 							</el-menu-item-group>
 						</el-submenu>
-						<el-submenu index='2'>
+						<!-- <el-submenu index='2'>
 							<template slot='title'>
 								<i :class="itemIndex<30&&itemIndex>20?'myicon icons22':'myicon icons2'"></i>
 								<span :class="itemIndex<30&&itemIndex>20?'title2':'title1'" style="font-size: 16px;">专题分析</span>
@@ -39,8 +39,8 @@
 								<el-menu-item index="2-4" @click='showMain(24)'><span :class="itemIndex==24?'point2':'point1'"></span>经济水平</el-menu-item>
 								<el-menu-item index="2-5" @click='showMain(25)'><span :class="itemIndex==25?'point2':'point1'"></span>医疗卫生情况</el-menu-item>
 							</el-menu-item-group>
-						</el-submenu>
-						<el-submenu index='3'>
+						</el-submenu> -->
+						<!-- <el-submenu index='3'>
 							<template slot='title'>
 								<i :class="itemIndex<40&&itemIndex>30?'myicon icons33':'myicon icons3'"></i>
 								<span :class="itemIndex<40&&itemIndex>30?'title2':'title1'" style="font-size: 16px;">自然人查询</span>
@@ -52,7 +52,7 @@
 								<el-menu-item index="3-4" @click='showMain(34)'><span :class="itemIndex==34?'point2':'point1'"></span>经济水平</el-menu-item>
 								<el-menu-item index="3-5" @click='showMain(35)'><span :class="itemIndex==35?'point2':'point1'"></span>医疗卫生情况</el-menu-item>
 							</el-menu-item-group>
-						</el-submenu>
+						</el-submenu> -->
 					</el-menu>
 				</el-aside>
 				<el-main style='position: relative;' id="mianref">

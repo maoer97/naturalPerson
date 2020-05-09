@@ -45,7 +45,7 @@
 						name:'各部占比',
 						type: 'pie',
 						selectedMode: 'single',
-						radius : '55%',
+						radius : '45%',
 						center: ['50%', '50%'],
 						data:echartData,
 						itemStyle: {

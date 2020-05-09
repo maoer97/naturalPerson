@@ -70,7 +70,7 @@
 									<p>同比上期<span :class="modelTwoDataOne.ruralRatio>0?'up':'down'">{{modelTwoDataOne.ruralRatio}}%<i></i></span></p>
 									<p style="color: #666666;margin-top: 24px;">城乡居民收入比</p>
 									<p style="color: #487fff;">({{modelTwoDataOne.year}}年)</p>
-									<div><span>{{modelTwoDataOne.rate}} </span> 元</div>
+									<div><span>{{modelTwoDataOne.rate}} </span></div>
 								</div>
 								<div class="ecmodelTwoEchartsOne">
 									<init-echartsseven :id='"ecmodelTwoEchartsOne"' :datas = 'modelTwoDataOne'></init-echartsseven>
@@ -126,7 +126,7 @@
 					</div>
 				</el-col>
 			</el-row>
-			<el-row>
+			<el-row v-if="false">
 				<el-col :span='24'>
 					<div class="modelSixBox">
 						<div class="modelboxs">

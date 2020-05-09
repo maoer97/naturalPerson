@@ -70,7 +70,7 @@
 					</div>
 				</el-col>
 			</el-row>
-			<el-row>
+			<el-row v-if="false">
 				<el-col :span='24'>
 					<div class="modelForeBox">
 						<div class="modelboxs">
@@ -82,7 +82,7 @@
 					</div>
 				</el-col>
 			</el-row>
-			<el-row>
+			<el-row v-if="false">
 				<el-col :span='24'>
 					<div class="modelFiveBox">
 						<div class="modelboxs">

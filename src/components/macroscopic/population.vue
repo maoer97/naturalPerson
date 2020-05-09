@@ -82,16 +82,31 @@
 				</el-col>
 			</el-row>
 			<el-row>
-				<el-col :span='24'>
+				<el-col :span='12' :gutter="20">
 					<div class="modelSixBox">
 						<div class="modelboxs">
 							<div class="levelTwoTitle"><span></span>婚姻情况及趋势分析</div>
 							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="modelSixEchartsOne">
+								<!-- <div class="modelSixEchartsOne">
 									<popuecharts-two :id='"modelSixEchartsOne"' :datas='modelSixDataOne'></popuecharts-two>
-								</div>
-								<div class="modelSixEchartsTwo">
+								</div> -->
+								<div class="modelSixEchartsTwo" style="width: 100%;">
 									<init-echartsfive :id='"modelSixEchartsTwo"' :datas = 'modelSixDataTwo'></init-echartsfive>
+								</div>
+							</div>
+						</div>
+					</div>
+				</el-col>
+				<el-col :span='12' :gutter="20">
+					<div class="modelTwoBox" style="height: 444px;">
+						<div class="modelboxs">
+							<div class="levelTwoTitle"><span></span>生育情况及趋势分析</div>
+							<div style="width: 100%;height: calc(100% - 56px);">
+								<!-- <div class="modelTwoEchartsOne">
+									<init-echartsfore :id='"modelTwoEchartsOne"' :datas = 'modelTwoDataOne'></init-echartsfore>
+								</div> -->
+								<div class="modelTwoEchartsTwo" style="width: 100%;">
+									<init-echartsone :id='"modelTwoEchartsTwo"' :datas = 'modelTwoDataTwo'></init-echartsone>
 								</div>
 							</div>
 						</div>
@@ -99,21 +114,7 @@
 				</el-col>
 			</el-row>
 			<el-row>
-				<el-col :span='24'>
-					<div class="modelTwoBox">
-						<div class="modelboxs">
-							<div class="levelTwoTitle"><span></span>生育情况及趋势分析</div>
-							<div style="width: 100%;height: calc(100% - 56px);">
-								<div class="modelTwoEchartsOne">
-									<init-echartsfore :id='"modelTwoEchartsOne"' :datas = 'modelTwoDataOne'></init-echartsfore>
-								</div>
-								<div class="modelTwoEchartsTwo">
-									<init-echartsone :id='"modelTwoEchartsTwo"' :datas = 'modelTwoDataTwo'></init-echartsone>
-								</div>
-							</div>
-						</div>
-					</div>
-				</el-col>
+				
 			</el-row>
 		</div>
 		
@@ -145,7 +146,7 @@
 				],
 				modelForeList:[
 					{label: '整体性别比', value: 1},
-					{label: '出生性别比', value: 2}
+					// {label: '出生性别比', value: 2}
 				],
 				modelOneDataOneD:{
 					sum:0,
@@ -185,13 +186,15 @@
 					dataListOne:[]
 				},
 				modelTwoDataTwo:{
-					type:2,
+					// type:2,
+					type:0,
 					min:[0],
 					unit:['单位(万人)'],
-					legendList:['出生人口(万人)','二胎人口(万人)'],
+					// legendList:['出生人口(万人)','二胎人口(万人)'],
+					legendList:['出生人口(万人)'],
 					nameList:[],
 					dataListOne:[],
-					dataListTwo:[],
+					// dataListTwo:[],
 					color:['#487fff','#84a9ff','#80ebf5','#3dc5dd']
 				},
 				modelThreeDataOne:{
@@ -204,8 +207,8 @@
 					color:['#487fff','#84a9ff','#ffc56a','#ffd99e']
 				},
 				modelThreeDataTwo:{
-					unit:['单位(万人)','城镇化率(%)'],
-					min:[3000,0],
+					unit:['单位(万人)','城镇化率'],
+					min:[3000,50],
 					legendList:['城镇人口(万人)','城镇化率(%)'],
 					nameList:[],
 					dataListOne:[],
@@ -247,10 +250,10 @@
 					dataListThree:[]
 				},
 				modelSixDataTwo:{
-					unit:['单位(个)','增长率(%)'],
+					unit:['单位(个)','增长率'],
 					legendList:['结婚家庭数(个)','增长率(%)'],
 					nameList:[],
-					min:[400000,-0.2],
+					min:[400000,-12],
 					dataListOne:[],
 					dataListTwo:[]
 				},
@@ -334,7 +337,7 @@
 					this.modelThreeDataOne.dataListOne.push(allList.rkqkThree.qsrkgcList[i].czrk)
 					this.modelThreeDataOne.dataListTwo.push(allList.rkqkThree.qsrkgcList[i].hjrk)
 					this.modelThreeDataTwo.dataListOne.push(allList.rkqkThree.qsrkgcList[i].urban)
-					this.modelThreeDataTwo.dataListTwo.push(allList.rkqkThree.qsrkgcList[i].czhl)
+					this.modelThreeDataTwo.dataListTwo.push((Number(allList.rkqkThree.qsrkgcList[i].czhl)*100).toFixed(2))
 				}
 				this.modelForeDataOne.dataList[0].labelData=[],this.modelForeDataOne.dataList[0].dataListOne=[],this.modelForeDataOne.dataList[0].dataListTwo=[],this.modelForeDataOne.dataList[1].labelData=[],this.modelForeDataOne.dataList[1].dataListOne=[],this.modelForeDataOne.dataList[1].dataListTwo=[]
 				for(var i in allList.rkqkFour.rknljztList){
@@ -369,7 +372,7 @@
 				for(var i in allList.rkqkSix.jhjtsList){
 					this.modelSixDataTwo.nameList.push(allList.rkqkSix.jhjtsList[i].year)
 					this.modelSixDataTwo.dataListOne.push(allList.rkqkSix.jhjtsList[i].marryNum)
-					this.modelSixDataTwo.dataListTwo.push(allList.rkqkSix.jhjtsList[i].growthRate)
+					this.modelSixDataTwo.dataListTwo.push((Number(allList.rkqkSix.jhjtsList[i].growthRate)*100).toFixed(2))
 				}
 				
 				// this.openFullScreen2(false)

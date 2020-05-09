@@ -12,6 +12,27 @@
 		props: ['id', 'datas', 'type'],
 		mounted() {
 			var series = [];
+			if(this.datas.type == 0){
+				series = [{
+						name: this.datas.legendList[0],
+						type: 'bar',
+						barWidth: 20,
+						stack: '1',
+						itemStyle: {
+							color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+									offset: 0,
+									color: this.datas.color[0]
+								},
+								{
+									offset: 1,
+									color: this.datas.color[1]
+								}
+							])
+						},
+						data: this.datas.dataListOne
+					}
+				]
+			}else 
 			if (this.datas.type == 3) {
 				series = [{
 						name: this.datas.legendList[0],

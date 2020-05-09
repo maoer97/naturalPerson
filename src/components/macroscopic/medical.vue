@@ -39,7 +39,7 @@
 					</div>
 				</el-col>
 			</el-row>
-			<el-row>
+			<el-row v-if="false">
 				<el-col :span='24'>
 					<div class="modelThreeBox">
 						<div class="modelboxs">
@@ -73,7 +73,7 @@
 					</div>
 				</el-col>
 			</el-row>
-			<el-row>
+			<el-row v-if="false">
 				<el-col :span='24'>
 					<div class="modelFiveBox">
 						<div class="modelboxs">
@@ -135,7 +135,7 @@
 				},],
 				modelOneDataTwo:{
 					unit:'单位(所)',
-					min:[30000,0],
+					min:[35000,0],
 					legendList:['卫生机构总计(所)'],
 					nameList:[],
 					dataListOne:[],
@@ -238,7 +238,7 @@
 				this.modelOneDataTwo.nameList = [];this.modelOneDataTwo.dataListOne = [];
 				for(var i in allList.healthcareOne.totalHealthcare){
 					this.modelOneDataTwo.nameList.push(allList.healthcareOne.totalHealthcare[i].year)
-					this.modelOneDataTwo.dataListOne.push(allList.healthcareOne.totalHealthcare[i].total)
+					this.modelOneDataTwo.dataListOne.push(Number(allList.healthcareOne.totalHealthcare[i].total).toFixed(0))
 				}
 				//模块二
 				this.modelTwoDataOne.nameList = [];this.modelTwoDataOne.dataListOne = [];

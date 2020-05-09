@@ -11,6 +11,9 @@
 		},
 		props:['id','datas'],
 		mounted() {
+			for(var i in this.datas.dataListOne){
+				this.datas.dataListOne[i] = Number(this.datas.dataListOne[i]).toFixed(0)
+			}
 			let myChart = this.$echarts.init(document.getElementById(this.id));
 			var units = this.datas.unit
 			myChart.setOption({
