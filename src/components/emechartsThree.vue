@@ -32,7 +32,12 @@
 				    },
 				},
 				tooltip: {
-					trigger: 'axis'
+					// trigger: 'axis',
+					show:true,
+					// formatter: "{a} <br/>排名:{dataIndex}<br/>{b} : {c} 元",
+					formatter:(params) => {
+					  return '排名:  '+ (params.dataIndex + 1) +'<br/>' + params.name+'<br/>平均工资:  '+ params.data +'元'
+					}
 				},
 				xAxis: {
 					type: 'category',

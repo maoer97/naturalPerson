@@ -358,7 +358,7 @@
 				this.modelSevenDataOne.nameList=[],this.modelSevenDataOne.dataListOne=[]
 				for(var i in allList.jysrSeven.fhypjgzList){
 					this.modelSevenDataOne.nameList.push(allList.jysrSeven.fhypjgzList[i].workName)
-					this.modelSevenDataOne.dataListOne.push(allList.jysrSeven.fhypjgzList[i].pjgz)
+					this.modelSevenDataOne.dataListOne.push(Number(allList.jysrSeven.fhypjgzList[i].pjgz).toFixed(0))
 				}
 				
 				this.showAll = true;
