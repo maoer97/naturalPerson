@@ -143,9 +143,8 @@
 				fullscreenLoading: true,
 				baseUrlOne:'',
 				modelOneList:[
-					{label: '总人口数', value: 1},
-					{label: '按产业', value: 2},
-					{label: '按城乡', value: 3}
+					{label: '按产业', value: 1},
+					{label: '按城乡', value: 2}
 				],
 				modelForeList:[
 					{label: '学历分布', value: 1},
@@ -159,15 +158,16 @@
 					year:2017
 				},
 				modelOneDataOne:[
+				// {
+				// 	unit:'单位(万人)',
+				// 	min:[0,0],
+				// 	legendList:['全社会从业人员(万人)','劳动人员人口(万人)'],
+				// 	nameList:[],
+				// 	dataListOne:[],
+				// 	dataListTwo:[],
+				// 	color:['#487fff','#84a9ff','#ffc56a','#ffd99e']
+				// },
 				{
-					unit:'单位(万人)',
-					min:[0,0],
-					legendList:['全社会从业人员(万人)','劳动人员人口(万人)'],
-					nameList:[],
-					dataListOne:[],
-					dataListTwo:[],
-					color:['#487fff','#84a9ff','#ffc56a','#ffd99e']
-				},{
 					unit:'单位(万人)',
 					type:3,
 					min:[0,0],
@@ -276,9 +276,9 @@
 					console.log(err)
 				} 
 				var allList = this.$store.state.employmentData;
-				this.modelOneDataOne[0].nameList = [],this.modelOneDataOne[1].nameList = [],this.modelOneDataOne[2].nameList = []
-				this.modelOneDataOne[0].dataListOne = [],this.modelOneDataOne[1].dataListOne = [],this.modelOneDataOne[2].dataListOne = []
-				this.modelOneDataOne[0].dataListTwo = [],this.modelOneDataOne[1].dataListTwo = [],this.modelOneDataOne[2].dataListTwo = [],this.modelOneDataOne[1].dataListThree=[]
+				this.modelOneDataOne[0].nameList = [],this.modelOneDataOne[1].nameList = []
+				this.modelOneDataOne[0].dataListOne = [],this.modelOneDataOne[1].dataListOne = []
+				this.modelOneDataOne[0].dataListTwo = [],this.modelOneDataOne[1].dataListTwo = [],this.modelOneDataOne[0].dataListThree=[]
 				for(var i in allList.jysrOne.qshcyrsListLeft){
 					this.modelOneDetail.year = allList.jysrOne.qshcyrsListLeft[0].year
 					this.modelOneDetail.qshcy = allList.jysrOne.qshcyrsListLeft[0].cyryNum
@@ -291,21 +291,21 @@
 					}
 					this.modelOneDetail.ldrk = allList.jysrOne.qshcyrsListLeft[0].ldrkNum 
 				}
-				for( var i in allList.jysrOne.qshcyrsList){
-					this.modelOneDataOne[0].nameList.push(allList.jysrOne.qshcyrsList[i].year)
-					this.modelOneDataOne[0].dataListOne.push(allList.jysrOne.qshcyrsList[i].cyryNum)
-					this.modelOneDataOne[0].dataListTwo.push(allList.jysrOne.qshcyrsList[i].ldrkNum)
-				}
+				// for( var i in allList.jysrOne.qshcyrsList){
+				// 	this.modelOneDataOne[0].nameList.push(allList.jysrOne.qshcyrsList[i].year)
+				// 	this.modelOneDataOne[0].dataListOne.push(allList.jysrOne.qshcyrsList[i].cyryNum)
+				// 	this.modelOneDataOne[0].dataListTwo.push(allList.jysrOne.qshcyrsList[i].ldrkNum)
+				// }
 				for(var i in allList.jysrOne.fcycyqkList){
-					this.modelOneDataOne[1].nameList.push(allList.jysrOne.fcycyqkList[i].year)
-					this.modelOneDataOne[1].dataListOne.push(allList.jysrOne.fcycyqkList[i].first)
-					this.modelOneDataOne[1].dataListTwo.push(allList.jysrOne.fcycyqkList[i].second)
-					this.modelOneDataOne[1].dataListThree.push(allList.jysrOne.fcycyqkList[i].third)
+					this.modelOneDataOne[0].nameList.push(allList.jysrOne.fcycyqkList[i].year)
+					this.modelOneDataOne[0].dataListOne.push(allList.jysrOne.fcycyqkList[i].first)
+					this.modelOneDataOne[0].dataListTwo.push(allList.jysrOne.fcycyqkList[i].second)
+					this.modelOneDataOne[0].dataListThree.push(allList.jysrOne.fcycyqkList[i].third)
 				}
 				for( var i in allList.jysrOne.fcxcyrsList){
-					this.modelOneDataOne[2].nameList.push(allList.jysrOne.fcxcyrsList[i].year)
-					this.modelOneDataOne[2].dataListOne.push(allList.jysrOne.fcxcyrsList[i].urban)
-					this.modelOneDataOne[2].dataListTwo.push(allList.jysrOne.fcxcyrsList[i].rural)
+					this.modelOneDataOne[1].nameList.push(allList.jysrOne.fcxcyrsList[i].year)
+					this.modelOneDataOne[1].dataListOne.push(allList.jysrOne.fcxcyrsList[i].urban)
+					this.modelOneDataOne[1].dataListTwo.push(allList.jysrOne.fcxcyrsList[i].rural)
 				}
 				this.modelTwoDataOne.nameList=[],this.modelTwoDataOne.dataListOne=[],this.modelTwoDataOne.dataListTwo=[],this.modelTwoDataOne.dataListThree=[],this.modelTwoDataOne.dataListFore=[];
 				this.modelTwoDataOne.year = allList.jysrTwo.jyqkListLeft[0].year;
